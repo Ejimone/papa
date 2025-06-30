@@ -1,0 +1,16 @@
+# Test dependencies
+pytest>=7.0,<8.0
+pytest-asyncio>=0.21.0,<0.24.0 # Check latest compatible versions
+httpx>=0.25.0,<0.28.0
+
+# Optional: for coverage
+# pytest-cov
+
+# Optional: for mocking
+# pytest-mock
+
+# Linters, formatters are usually in dev.txt or handled by pre-commit
+# black
+# flake8
+# isort
+# mypy
