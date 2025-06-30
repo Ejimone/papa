@@ -679,6 +679,433 @@ GET /api/v1/analytics/progress - Learning progress tracking
 - Premium feature conversion rates
 - Customer satisfaction scores
 
----
+Backend-File-Structure:
+backend/
+├── app/
+│ ├── **init**.py
+│ ├── main.py # FastAPI application entry point
+│ ├── config.py # Configuration settings
+│ ├── dependencies.py # Dependency injection
+│ ├── exceptions.py # Custom exceptions
+│ ├── middleware.py # Custom middleware
+│ │
+│ ├── api/ # API layer
+│ │ ├── **init**.py
+│ │ ├── deps.py # API dependencies
+│ │ ├── errors/ # Error handlers
+│ │ │ ├── **init**.py
+│ │ │ ├── http_error.py
+│ │ │ └── validation_error.py
+│ │ │
+│ │ └── v1/ # API version 1
+│ │ ├── **init**.py
+│ │ ├── api.py # Main API router
+│ │ └── endpoints/ # API endpoints
+│ │ ├── **init**.py
+│ │ ├── auth.py # Authentication endpoints
+│ │ ├── users.py # User management
+│ │ ├── questions.py # Question management
+│ │ ├── practice.py # Practice sessions
+│ │ ├── analytics.py # Analytics endpoints
+│ │ ├── search.py # Search functionality
+│ │ ├── subjects.py # Subject management
+│ │ └── admin.py # Admin endpoints
+│ │
+│ ├── core/ # Core functionality
+│ │ ├── **init**.py
+│ │ ├── config.py # Core configuration
+│ │ ├── security.py # Security utilities
+│ │ ├── database.py # Database configuration
+│ │ ├── redis.py # Redis configuration
+│ │ ├── logging.py # Logging configuration
+│ │ └── events.py # Application events
+│ │
+│ ├── models/ # Database models
+│ │ ├── **init**.py
+│ │ ├── base.py # Base model class
+│ │ ├── user.py # User models
+│ │ ├── question.py # Question models
+│ │ ├── subject.py # Subject models
+│ │ ├── practice.py # Practice session models
+│ │ ├── analytics.py # Analytics models
+│ │ └── associations.py # Many-to-many relationships
+│ │
+│ ├── schemas/ # Pydantic schemas
+│ │ ├── **init**.py
+│ │ ├── base.py # Base schema classes
+│ │ ├── user.py # User schemas
+│ │ ├── question.py # Question schemas
+│ │ ├── subject.py # Subject schemas
+│ │ ├── practice.py # Practice schemas
+│ │ ├── analytics.py # Analytics schemas
+│ │ ├── auth.py # Authentication schemas
+│ │ └── common.py # Common schemas
+│ │
+│ ├── services/ # Business logic layer
+│ │ ├── **init**.py
+│ │ ├── base.py # Base service class
+│ │ ├── user_service.py # User business logic
+│ │ ├── question_service.py # Question business logic
+│ │ ├── practice_service.py # Practice session logic
+│ │ ├── analytics_service.py # Analytics logic
+│ │ ├── search_service.py # Search logic
+│ │ ├── auth_service.py # Authentication logic
+│ │ └── notification_service.py # Notification logic
+│ │
+│ ├── repositories/ # Data access layer
+│ │ ├── **init**.py
+│ │ ├── base.py # Base repository class
+│ │ ├── user_repository.py # User data access
+│ │ ├── question_repository.py # Question data access
+│ │ ├── practice_repository.py # Practice data access
+│ │ ├── analytics_repository.py # Analytics data access
+│ │ └── subject_repository.py # Subject data access
+│ │
+│ ├── ai/ # AI/ML functionality
+│ │ ├── **init**.py
+│ │ ├── embeddings/ # Embedding generation
+│ │ │ ├── **init**.py
+│ │ │ ├── text_embeddings.py # Text embedding service
+│ │ │ ├── image_embeddings.py # Image embedding service
+│ │ │ └── hybrid_embeddings.py # Combined embeddings
+│ │ │
+│ │ ├── vector_db/ # Vector database operations
+│ │ │ ├── **init**.py
+│ │ │ ├── client.py # Chroma client
+│ │ │ ├── collections.py # Collection management
+│ │ │ └── queries.py # Vector queries
+│ │ │
+│ │ ├── llm/ # Large Language Model integration
+│ │ │ ├── **init**.py
+│ │ │ ├── gemini_client.py # Google Gemini client
+│ │ │ ├── prompt_templates.py # Prompt templates
+│ │ │ └── response_parser.py # Response parsing
+│ │ │
+│ │ ├── processing/ # Content processing
+│ │ │ ├── **init**.py
+│ │ │ ├── text_processor.py # Text processing
+│ │ │ ├── image_processor.py # Image/OCR processing
+│ │ │ ├── pdf_processor.py # PDF processing
+│ │ │ └── metadata_extractor.py # Metadata extraction
+│ │ │
+│ │ ├── personalization/ # Personalization engine
+│ │ │ ├── **init**.py
+│ │ │ ├── user_modeling.py # User behavior modeling
+│ │ │ ├── recommendation.py # Recommendation engine
+│ │ │ ├── difficulty_adapter.py # Difficulty adaptation
+│ │ │ └── learning_path.py # Learning path generation
+│ │ │
+│ │ └── utils/ # AI utilities
+│ │ ├── **init**.py
+│ │ ├── similarity.py # Similarity calculations
+│ │ ├── clustering.py # Content clustering
+│ │ └── evaluation.py # Model evaluation
+│ │
+│ ├── utils/ # General utilities
+│ │ ├── **init**.py
+│ │ ├── helpers.py # Helper functions
+│ │ ├── validators.py # Custom validators
+│ │ ├── formatters.py # Data formatters
+│ │ ├── file_utils.py # File operations
+│ │ ├── image_utils.py # Image utilities
+│ │ └── cache_utils.py # Caching utilities
+│ │
+│ ├── tasks/ # Background tasks
+│ │ ├── **init**.py
+│ │ ├── celery_app.py # Celery configuration
+│ │ ├── question_processing.py # Question processing tasks
+│ │ ├── analytics_tasks.py # Analytics computation
+│ │ ├── notification_tasks.py # Notification tasks
+│ │ └── maintenance_tasks.py # Maintenance tasks
+│ │
+│ └── tests/ # Test files
+│ ├── **init**.py
+│ ├── conftest.py # Test configuration
+│ ├── test_auth.py # Authentication tests
+│ ├── test_questions.py # Question tests
+│ ├── test_users.py # User tests
+│ ├── test_practice.py # Practice tests
+│ ├── test_ai.py # AI functionality tests
+│ └── test_utils.py # Utility tests
+│
+├── alembic/ # Database migrations
+│ ├── versions/ # Migration files
+│ ├── env.py # Alembic environment
+│ ├── script.py.mako # Migration template
+│ └── alembic.ini # Alembic configuration
+│
+├── scripts/ # Utility scripts
+│ ├── init_db.py # Database initialization
+│ ├── seed_data.py # Seed sample data
+│ ├── backup_db.py # Database backup
+│ ├── process_questions.py # Bulk question processing
+│ └── migrate_data.py # Data migration scripts
+│
+├── requirements/ # Python dependencies
+│ ├── base.txt # Base requirements
+│ ├── dev.txt # Development requirements
+│ ├── prod.txt # Production requirements
+│ └── test.txt # Testing requirements
+│
+├── Dockerfile # Docker configuration
+├── docker-compose.yml # Docker compose for development
+├── .env.example # Environment variables template
+├── .gitignore # Git ignore rules
+├── pyproject.toml # Python project configuration
+├── README.md # Backend documentation
+└── run.py # Application runner
 
-This documentation serves as the foundation for your AI-powered Past Questions app development. It provides comprehensive coverage of all aspects while remaining flexible enough to adapt as requirements evolve during development.
+Frontend-File-Structure(React Native):
+frontend/
+├── src/
+│ ├── components/ # Reusable UI components
+│ │ ├── common/ # Common components
+│ │ │ ├── Button/
+│ │ │ │ ├── index.tsx
+│ │ │ │ ├── Button.tsx
+│ │ │ │ └── Button.styles.ts
+│ │ │ ├── Input/
+│ │ │ │ ├── index.tsx
+│ │ │ │ ├── Input.tsx
+│ │ │ │ └── Input.styles.ts
+│ │ │ ├── Loading/
+│ │ │ │ ├── index.tsx
+│ │ │ │ ├── Loading.tsx
+│ │ │ │ └── Loading.styles.ts
+│ │ │ ├── Modal/
+│ │ │ ├── Card/
+│ │ │ ├── Header/
+│ │ │ ├── Footer/
+│ │ │ └── index.ts # Component exports
+│ │ │
+│ │ ├── forms/ # Form components
+│ │ │ ├── LoginForm/
+│ │ │ ├── RegisterForm/
+│ │ │ ├── ProfileForm/
+│ │ │ ├── QuestionForm/
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── question/ # Question-related components
+│ │ │ ├── QuestionCard/
+│ │ │ ├── QuestionList/
+│ │ │ ├── QuestionDetail/
+│ │ │ ├── AnswerInput/
+│ │ │ ├── ExplanationView/
+│ │ │ ├── HintSystem/
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── practice/ # Practice session components
+│ │ │ ├── PracticeSession/
+│ │ │ ├── TimerComponent/
+│ │ │ ├── ProgressBar/
+│ │ │ ├── ResultsView/
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── analytics/ # Analytics components
+│ │ │ ├── PerformanceChart/
+│ │ │ ├── SubjectAnalytics/
+│ │ │ ├── ProgressChart/
+│ │ │ ├── StatCard/
+│ │ │ └── index.ts
+│ │ │
+│ │ └── navigation/ # Navigation components
+│ │ ├── TabBar/
+│ │ ├── DrawerContent/
+│ │ └── index.ts
+│ │
+│ ├── screens/ # Screen components
+│ │ ├── auth/ # Authentication screens
+│ │ │ ├── LoginScreen.tsx
+│ │ │ ├── RegisterScreen.tsx
+│ │ │ ├── ForgotPasswordScreen.tsx
+│ │ │ ├── OnboardingScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── home/ # Home screens
+│ │ │ ├── HomeScreen.tsx
+│ │ │ ├── DashboardScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── practice/ # Practice screens
+│ │ │ ├── PracticeHomeScreen.tsx
+│ │ │ ├── QuestionBrowserScreen.tsx
+│ │ │ ├── PracticeSessionScreen.tsx
+│ │ │ ├── ResultsScreen.tsx
+│ │ │ ├── BookmarksScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── subjects/ # Subject screens
+│ │ │ ├── SubjectListScreen.tsx
+│ │ │ ├── SubjectDetailScreen.tsx
+│ │ │ ├── TopicListScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── analytics/ # Analytics screens
+│ │ │ ├── AnalyticsScreen.tsx
+│ │ │ ├── PerformanceScreen.tsx
+│ │ │ ├── ProgressScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── profile/ # Profile screens
+│ │ │ ├── ProfileScreen.tsx
+│ │ │ ├── SettingsScreen.tsx
+│ │ │ ├── PreferencesScreen.tsx
+│ │ │ ├── HelpScreen.tsx
+│ │ │ └── index.ts
+│ │ │
+│ │ └── search/ # Search screens
+│ │ ├── SearchScreen.tsx
+│ │ ├── FilterScreen.tsx
+│ │ └── index.ts
+│ │
+│ ├── navigation/ # Navigation configuration
+│ │ ├── AppNavigator.tsx # Main navigation
+│ │ ├── AuthNavigator.tsx # Auth navigation
+│ │ ├── MainNavigator.tsx # Main app navigation
+│ │ ├── TabNavigator.tsx # Bottom tab navigation
+│ │ ├── StackNavigator.tsx # Stack navigation
+│ │ └── index.ts
+│ │
+│ ├── store/ # Redux store
+│ │ ├── index.ts # Store configuration
+│ │ ├── rootReducer.ts # Root reducer
+│ │ ├── middleware.ts # Custom middleware
+│ │ │
+│ │ ├── slices/ # Redux slices
+│ │ │ ├── authSlice.ts # Authentication state
+│ │ │ ├── userSlice.ts # User state
+│ │ │ ├── questionSlice.ts # Question state
+│ │ │ ├── practiceSlice.ts # Practice state
+│ │ │ ├── analyticsSlice.ts # Analytics state
+│ │ │ ├── searchSlice.ts # Search state
+│ │ │ └── index.ts
+│ │ │
+│ │ └── api/ # RTK Query API
+│ │ ├── baseApi.ts # Base API configuration
+│ │ ├── authApi.ts # Authentication API
+│ │ ├── userApi.ts # User API
+│ │ ├── questionApi.ts # Question API
+│ │ ├── practiceApi.ts # Practice API
+│ │ ├── analyticsApi.ts # Analytics API
+│ │ └── index.ts
+│ │
+│ ├── hooks/ # Custom React hooks
+│ │ ├── useAuth.ts # Authentication hook
+│ │ ├── useLocalStorage.ts # Local storage hook
+│ │ ├── useNetworkStatus.ts # Network status hook
+│ │ ├── usePracticeSession.ts # Practice session hook
+│ │ ├── useAnalytics.ts # Analytics hook
+│ │ ├── useDebounce.ts # Debounce hook
+│ │ ├── usePermissions.ts # Permissions hook
+│ │ └── index.ts
+│ │
+│ ├── services/ # Service layer
+│ │ ├── api/ # API services
+│ │ │ ├── client.ts # API client configuration
+│ │ │ ├── auth.ts # Auth API calls
+│ │ │ ├── questions.ts # Question API calls
+│ │ │ ├── practice.ts # Practice API calls
+│ │ │ ├── analytics.ts # Analytics API calls
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── storage/ # Storage services
+│ │ │ ├── asyncStorage.ts # AsyncStorage wrapper
+│ │ │ ├── secureStorage.ts # Secure storage
+│ │ │ ├── cache.ts # Cache management
+│ │ │ └── index.ts
+│ │ │
+│ │ ├── offline/ # Offline functionality
+│ │ │ ├── offlineManager.ts # Offline state management
+│ │ │ ├── syncManager.ts # Data synchronization
+│ │ │ └── index.ts
+│ │ │
+│ │ └── notifications/ # Notification services
+│ │ ├── pushNotifications.ts # Push notifications
+│ │ ├── localNotifications.ts# Local notifications
+│ │ └── index.ts
+│ │
+│ ├── utils/ # Utility functions
+│ │ ├── constants.ts # App constants
+│ │ ├── helpers.ts # Helper functions
+│ │ ├── validators.ts # Validation functions
+│ │ ├── formatters.ts # Data formatters
+│ │ ├── permissions.ts # Permission utilities
+│ │ ├── analytics.ts # Analytics utilities
+│ │ ├── errorHandler.ts # Error handling
+│ │ └── index.ts
+│ │
+│ ├── styles/ # Global styles
+│ │ ├── colors.ts # Color palette
+│ │ ├── typography.ts # Typography styles
+│ │ ├── spacing.ts # Spacing constants
+│ │ ├── dimensions.ts # Screen dimensions
+│ │ ├── globalStyles.ts # Global styles
+│ │ └── index.ts
+│ │
+│ ├── types/ # TypeScript types
+│ │ ├── auth.ts # Authentication types
+│ │ ├── user.ts # User types
+│ │ ├── question.ts # Question types
+│ │ ├── practice.ts # Practice types
+│ │ ├── analytics.ts # Analytics types
+│ │ ├── navigation.ts # Navigation types
+│ │ ├── api.ts # API types
+│ │ └── index.ts
+│ │
+│ ├── assets/ # Static assets
+│ │ ├── images/ # Image assets
+│ │ │ ├── icons/ # App icons
+│ │ │ ├── illustrations/ # Illustrations
+│ │ │ └── backgrounds/ # Background images
+│ │ ├── fonts/ # Custom fonts
+│ │ └── data/ # Static data files
+│ │
+│ ├── config/ # Configuration files
+│ │ ├── env.ts # Environment configuration
+│ │ ├── api.ts # API configuration
+│ │ ├── notifications.ts # Notification configuration
+│ │ └── index.ts
+│ │
+│ └── **tests**/ # Test files
+│ ├── components/ # Component tests
+│ ├── screens/ # Screen tests
+│ ├── hooks/ # Hook tests
+│ ├── services/ # Service tests
+│ ├── utils/ # Utility tests
+│ └── **mocks**/ # Mock files
+│
+├── android/ # Android specific files
+│ ├── app/
+│ │ ├── src/
+│ │ │ └── main/
+│ │ │ ├── java/
+│ │ │ ├── res/
+│ │ │ └── AndroidManifest.xml
+│ │ ├── build.gradle
+│ │ └── proguard-rules.pro
+│ ├── gradle/
+│ ├── build.gradle
+│ ├── settings.gradle
+│ └── gradle.properties
+│
+├── ios/ # iOS specific files
+│ ├── PastQuestionsApp/
+│ │ ├── AppDelegate.h
+│ │ ├── AppDelegate.mm
+│ │ ├── Info.plist
+│ │ └── main.m
+│ ├── PastQuestionsApp.xcodeproj/
+│ ├── PastQuestionsApp.xcworkspace/
+│ └── Podfile
+│
+├── .expo/ # Expo configuration (if using Expo)
+├── metro.config.js # Metro bundler configuration
+├── babel.config.js # Babel configuration
+├── tsconfig.json # TypeScript configuration
+├── jest.config.js # Jest testing configuration
+├── .eslintrc.js # ESLint configuration
+├── .prettierrc # Prettier configuration
+├── package.json # Node.js dependencies
+├── yarn.lock # Yarn lock file
+├── .gitignore # Git ignore rules
+└── README.md # Frontend documentation

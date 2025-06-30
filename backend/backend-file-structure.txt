@@ -1,0 +1,174 @@
+backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                        # FastAPI application entry point
+│   ├── config.py                      # Configuration settings
+│   ├── dependencies.py                # Dependency injection
+│   ├── exceptions.py                  # Custom exceptions
+│   ├── middleware.py                  # Custom middleware
+│   │
+│   ├── api/                           # API layer
+│   │   ├── __init__.py
+│   │   ├── deps.py                    # API dependencies
+│   │   ├── errors/                    # Error handlers
+│   │   │   ├── __init__.py
+│   │   │   ├── http_error.py
+│   │   │   └── validation_error.py
+│   │   │
+│   │   └── v1/                        # API version 1
+│   │       ├── __init__.py
+│   │       ├── api.py                 # Main API router
+│   │       └── endpoints/             # API endpoints
+│   │           ├── __init__.py
+│   │           ├── auth.py            # Authentication endpoints
+│   │           ├── users.py           # User management
+│   │           ├── questions.py       # Question management
+│   │           ├── practice.py        # Practice sessions
+│   │           ├── analytics.py       # Analytics endpoints
+│   │           ├── search.py          # Search functionality
+│   │           ├── subjects.py        # Subject management
+│   │           └── admin.py           # Admin endpoints
+│   │
+│   ├── core/                          # Core functionality
+│   │   ├── __init__.py
+│   │   ├── config.py                  # Core configuration
+│   │   ├── security.py                # Security utilities
+│   │   ├── database.py                # Database configuration
+│   │   ├── redis.py                   # Redis configuration
+│   │   ├── logging.py                 # Logging configuration
+│   │   └── events.py                  # Application events
+│   │
+│   ├── models/                        # Database models
+│   │   ├── __init__.py
+│   │   ├── base.py                    # Base model class
+│   │   ├── user.py                    # User models
+│   │   ├── question.py                # Question models
+│   │   ├── subject.py                 # Subject models
+│   │   ├── practice.py                # Practice session models
+│   │   ├── analytics.py               # Analytics models
+│   │   └── associations.py            # Many-to-many relationships
+│   │
+│   ├── schemas/                       # Pydantic schemas
+│   │   ├── __init__.py
+│   │   ├── base.py                    # Base schema classes
+│   │   ├── user.py                    # User schemas
+│   │   ├── question.py                # Question schemas
+│   │   ├── subject.py                 # Subject schemas
+│   │   ├── practice.py                # Practice schemas
+│   │   ├── analytics.py               # Analytics schemas
+│   │   ├── auth.py                    # Authentication schemas
+│   │   └── common.py                  # Common schemas
+│   │
+│   ├── services/                      # Business logic layer
+│   │   ├── __init__.py
+│   │   ├── base.py                    # Base service class
+│   │   ├── user_service.py            # User business logic
+│   │   ├── question_service.py        # Question business logic
+│   │   ├── practice_service.py        # Practice session logic
+│   │   ├── analytics_service.py       # Analytics logic
+│   │   ├── search_service.py          # Search logic
+│   │   ├── auth_service.py            # Authentication logic
+│   │   └── notification_service.py    # Notification logic
+│   │
+│   ├── repositories/                  # Data access layer
+│   │   ├── __init__.py
+│   │   ├── base.py                    # Base repository class
+│   │   ├── user_repository.py         # User data access
+│   │   ├── question_repository.py     # Question data access
+│   │   ├── practice_repository.py     # Practice data access
+│   │   ├── analytics_repository.py    # Analytics data access
+│   │   └── subject_repository.py      # Subject data access
+│   │
+│   ├── ai/                           # AI/ML functionality
+│   │   ├── __init__.py
+│   │   ├── embeddings/               # Embedding generation
+│   │   │   ├── __init__.py
+│   │   │   ├── text_embeddings.py    # Text embedding service
+│   │   │   ├── image_embeddings.py   # Image embedding service
+│   │   │   └── hybrid_embeddings.py  # Combined embeddings
+│   │   │
+│   │   ├── vector_db/                # Vector database operations
+│   │   │   ├── __init__.py
+│   │   │   ├── client.py             # Chroma client
+│   │   │   ├── collections.py        # Collection management
+│   │   │   └── queries.py            # Vector queries
+│   │   │
+│   │   ├── llm/                      # Large Language Model integration
+│   │   │   ├── __init__.py
+│   │   │   ├── gemini_client.py      # Google Gemini client
+│   │   │   ├── prompt_templates.py   # Prompt templates
+│   │   │   └── response_parser.py    # Response parsing
+│   │   │
+│   │   ├── processing/               # Content processing
+│   │   │   ├── __init__.py
+│   │   │   ├── text_processor.py     # Text processing
+│   │   │   ├── image_processor.py    # Image/OCR processing
+│   │   │   ├── pdf_processor.py      # PDF processing
+│   │   │   └── metadata_extractor.py # Metadata extraction
+│   │   │
+│   │   ├── personalization/          # Personalization engine
+│   │   │   ├── __init__.py
+│   │   │   ├── user_modeling.py      # User behavior modeling
+│   │   │   ├── recommendation.py     # Recommendation engine
+│   │   │   ├── difficulty_adapter.py # Difficulty adaptation
+│   │   │   └── learning_path.py      # Learning path generation
+│   │   │
+│   │   └── utils/                    # AI utilities
+│   │       ├── __init__.py
+│   │       ├── similarity.py         # Similarity calculations
+│   │       ├── clustering.py         # Content clustering
+│   │       └── evaluation.py         # Model evaluation
+│   │
+│   ├── utils/                        # General utilities
+│   │   ├── __init__.py
+│   │   ├── helpers.py                # Helper functions
+│   │   ├── validators.py             # Custom validators
+│   │   ├── formatters.py             # Data formatters
+│   │   ├── file_utils.py             # File operations
+│   │   ├── image_utils.py            # Image utilities
+│   │   └── cache_utils.py            # Caching utilities
+│   │
+│   ├── tasks/                        # Background tasks
+│   │   ├── __init__.py
+│   │   ├── celery_app.py             # Celery configuration
+│   │   ├── question_processing.py    # Question processing tasks
+│   │   ├── analytics_tasks.py        # Analytics computation
+│   │   ├── notification_tasks.py     # Notification tasks
+│   │   └── maintenance_tasks.py      # Maintenance tasks
+│   │
+│   └── tests/                        # Test files
+│       ├── __init__.py
+│       ├── conftest.py               # Test configuration
+│       ├── test_auth.py              # Authentication tests
+│       ├── test_questions.py         # Question tests
+│       ├── test_users.py             # User tests
+│       ├── test_practice.py          # Practice tests
+│       ├── test_ai.py                # AI functionality tests
+│       └── test_utils.py             # Utility tests
+│
+├── alembic/                          # Database migrations
+│   ├── versions/                     # Migration files
+│   ├── env.py                        # Alembic environment
+│   ├── script.py.mako               # Migration template
+│   └── alembic.ini                  # Alembic configuration
+│
+├── scripts/                          # Utility scripts
+│   ├── init_db.py                   # Database initialization
+│   ├── seed_data.py                 # Seed sample data
+│   ├── backup_db.py                 # Database backup
+│   ├── process_questions.py         # Bulk question processing
+│   └── migrate_data.py              # Data migration scripts
+│
+├── requirements/                     # Python dependencies
+│   ├── base.txt                     # Base requirements
+│   ├── dev.txt                      # Development requirements
+│   ├── prod.txt                     # Production requirements
+│   └── test.txt                     # Testing requirements
+│
+├── Dockerfile                        # Docker configuration
+├── docker-compose.yml               # Docker compose for development
+├── .env.example                     # Environment variables template
+├── .gitignore                       # Git ignore rules
+├── pyproject.toml                   # Python project configuration
+├── README.md                        # Backend documentation
+└── run.py                           # Application runner

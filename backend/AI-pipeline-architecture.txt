@@ -1,0 +1,24 @@
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           AI PIPELINE ARCHITECTURE                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐            │
+│  │   INPUT LAYER   │    │ PROCESSING LAYER│    │  OUTPUT LAYER   │            │
+│  └─────────────────┘    └─────────────────┘    └─────────────────┘            │
+│           │                       │                       │                    │
+│           ▼                       ▼                       ▼                    │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐            │
+│  │ Content Ingestion│    │ AI Services Hub │    │ Response Engine │            │
+│  │ - Text/Images   │    │ - Google Gemini │    │ - Explanations  │            │
+│  │ - PDFs/Docs     │    │ - Embeddings    │    │ - Hints         │            │
+│  │ - User Actions  │    │ - Vision API    │    │ - Recommendations│            │
+│  └─────────────────┘    └─────────────────┘    └─────────────────┘            │
+│           │                       │                       │                    │
+│           ▼                       ▼                       ▼                    │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐            │
+│  │ Data Processing │    │ Vector Database │    │ Personalization │            │
+│  │ - OCR/Parsing   │    │ - Chroma Store  │    │ - User Modeling │            │
+│  │ - Validation    │    │ - Similarity    │    │ - Adaptive Logic│            │
+│  │ - Enrichment    │    │ - Retrieval     │    │ - Learning Paths│            │
+│  └─────────────────┘    └─────────────────┘    └─────────────────┘            │
+└─────────────────────────────────────────────────────────────────────────────────┘
