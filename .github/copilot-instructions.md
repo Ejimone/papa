@@ -1,7 +1,3 @@
-# papa
-
-AI powered past questions app
-
 # AI-Powered Past Questions App - Project Documentation
 
 ## Table of Contents
