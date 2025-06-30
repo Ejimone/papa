@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pastquestions_backend_dev
+    container_name: pastquestions_backend_dev
+    command: python run.py # Uses the run.py script which has uvicorn with reload
+    volumes:
+      - .:/app # Mount current directory to /app in container for live reload
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    environment:
+      - PYTHONUNBUFFERED=1 # Ensures print statements appear in logs
+
+  db:
+    image: postgres:15-alpine
+    container_name: pastquestions_db_dev
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432" # Expose PostgreSQL port to host (optional, for direct access)
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-app}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-app}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: pastquestions_redis_dev
+    ports:
+      - "6379:6379" # Expose Redis port to host (optional)
+    volumes:
+      - redis_data_dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: pgAdmin for database management
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pastquestions_pgadmin_dev
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - pgadmin_data_dev:/var/lib/pgadmin
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:
+  # pgadmin_data_dev:

@@ -1,0 +1,25 @@
+fastapi>=0.104,<0.111
+uvicorn[standard]>=0.20.0,<0.25.0
+sqlalchemy[asyncio]>=2.0,<2.1
+psycopg2-binary>=2.9,<2.10 # For alembic and sync operations if any; asyncpg for async
+asyncpg>=0.27,<0.30
+redis>=5.0,<5.1
+pydantic-settings>=2.0,<2.2
+python-dotenv>=1.0,<1.1
+passlib[bcrypt]>=1.7,<1.8
+python-jose[cryptography]>=3.3,<3.4
+alembic>=1.9,<1.14
+
+# For Celery (will be used later)
+# celery>=5.3,<5.4
+# flower>=2.0,<2.1
+
+# Logging
+loguru>=0.7,<0.8
+
+# Email validation (optional, for user email validation)
+# email_validator>=2.0,<2.2
+
+# FastAPI-Users (can be added in a later step if we decide to use its full features)
+# fastapi-users[sqlalchemy]>=12.1,<13.0
+# fastapi-users-db-sqlalchemy-asyncpg>=0.1.0,<0.2.0
