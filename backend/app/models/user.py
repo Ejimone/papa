@@ -18,9 +18,19 @@ class User(Base):
     # created_at = Column(DateTime, default=datetime.utcnow) # Inherited from Base
     # updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) # Inherited from Base
 
-    # Relationships - can be added as needed, e.g.
-    # profile = relationship("UserProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
-    # attempts = relationship("UserAttempt", back_populates="user")
+    # Relationships
+    profile = relationship("UserProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    preferences = relationship("UserPreferences", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    attempts = relationship("UserAttempt", back_populates="user")
+    bookmarks = relationship("UserBookmark", back_populates="user")
+    progress = relationship("UserProgress", back_populates="user")
+    analytics = relationship("UserAnalytics", back_populates="user")
+    events = relationship("UserEvent", back_populates="user")
+    practice_sessions = relationship("PracticeSession", back_populates="user")
+    
+    # Many-to-many relationships
+    subjects = relationship("Subject", secondary="user_subjects", back_populates="enrolled_users")
+    study_groups = relationship("StudyGroup", secondary="user_study_groups", back_populates="members")
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
