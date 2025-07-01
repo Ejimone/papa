@@ -35,6 +35,20 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_EMAIL: str = os.getenv("FIRST_SUPERUSER_EMAIL", "admin@example.com")
     FIRST_SUPERUSER_PASSWORD: str = os.getenv("FIRST_SUPERUSER_PASSWORD", "adminpassword")
 
+    # AI Service Keys
+    GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY") # General key, might be used by some Google APIs
+    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY") # Specifically for Gemini LLM
+
+    # Google Cloud specific (for Vertex AI, etc.)
+    GOOGLE_CLOUD_PROJECT_ID: Optional[str] = os.getenv("GOOGLE_CLOUD_PROJECT_ID")
+    GOOGLE_CLOUD_LOCATION: Optional[str] = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1") # Default location if not set
+    DOCUMENTAI_PROCESSOR_ID: Optional[str] = os.getenv("DOCUMENTAI_PROCESSOR_ID") # For PDF processing
+    DOCUMENTAI_LOCATION: Optional[str] = os.getenv("DOCUMENTAI_LOCATION", "us") # DocumentAI often uses 'us' or 'eu'
+
+    # ChromaDB settings (example, if not running locally with defaults)
+    # CHROMA_DB_HOST: str = os.getenv("CHROMA_DB_HOST", "localhost")
+    # CHROMA_DB_PORT: int = int(os.getenv("CHROMA_DB_PORT", 8000)) # Default Chroma port
+
 
     class Config:
         case_sensitive = True
@@ -44,4 +58,10 @@ class Settings(BaseSettings):
 settings = Settings()
 
 # Construct SQLAlchemy Database URI after loading other settings
-settings.SQLALCHEMY_DATABASE_URI = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_SERVER}/{settings.POSTGRES_DB}"
+if settings.POSTGRES_USER and settings.POSTGRES_PASSWORD and settings.POSTGRES_SERVER and settings.POSTGRES_DB:
+    settings.SQLALCHEMY_DATABASE_URI = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_SERVER}/{settings.POSTGRES_DB}"
+else:
+    # Handle case where DB connection details might not be fully provided if app can run without DB
+    # For now, we assume they are provided if DB is intended to be used.
+    # If running in a mode that doesn't require DB, this might be None.
+    pass
