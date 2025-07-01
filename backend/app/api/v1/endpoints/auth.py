@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.auth import LoginRequest, Token, RefreshTokenRequest
@@ -21,13 +22,47 @@ async def register_new_user(
     user = await auth_service.register_user(db=db, user_in=user_in)
     return user
 
-@router.post("/login", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(
-    login_data: LoginRequest, # Can use OAuth2PasswordRequestForm = Depends() for form data
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    OAuth2 compatible token login, get an access token for future requests.
+    OAuth2 compatible token login for Swagger UI and other OAuth2 clients.
+    Use email as username. Client ID and client secret are ignored.
+    """
+    try:
+        # Convert OAuth2 form data to our LoginRequest format
+        # Use email as username (form_data.username will contain the email)
+        login_data = LoginRequest(email=form_data.username, password=form_data.password)
+        token = await auth_service.login_user(db=db, login_data=login_data)
+        return token
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Login error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid credentials or login data"
+        )
+
+@router.post("/login", response_model=Token)
+async def login_json(
+    login_data: LoginRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    JSON-based login endpoint for programmatic access.
+    """
+    token = await auth_service.login_user(db=db, login_data=login_data)
+    return token
+
+@router.post("/login-json", response_model=Token)
+async def login_json(
+    login_data: LoginRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    JSON-based login endpoint for programmatic access.
     """
     token = await auth_service.login_user(db=db, login_data=login_data)
     return token

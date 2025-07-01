@@ -4,7 +4,7 @@ from app.schemas.user import UserCreate
 from app.schemas.auth import LoginRequest, Token
 from app.models.user import User
 from app.repositories.user_repository import user_repo
-from app.core.security import get_password_hash, verify_password, create_access_token, create_refresh_token
+from app.core.security import get_password_hash, verify_password, create_access_token, create_refresh_token, decode_token
 from app.core.config import settings
 
 class AuthService:

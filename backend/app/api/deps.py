@@ -12,7 +12,8 @@ from app.repositories.user_repository import user_repo
 from app.schemas.auth import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/auth/login" # Points to the login endpoint
+    tokenUrl=f"{settings.API_V1_STR}/auth/token",  # Points to the OAuth2 compatible token endpoint
+    auto_error=False  # Allow manual error handling
 )
 
 async def get_current_user(
