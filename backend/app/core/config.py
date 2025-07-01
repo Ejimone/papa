@@ -12,11 +12,12 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database settings
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "db")
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "app")
-    SQLALCHEMY_DATABASE_URI: str = "sqlite:///./test.db"
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "papa_db")
+    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", "5432"))
+    SQLALCHEMY_DATABASE_URI: Optional[str] = None
 
     # Redis settings
     REDIS_HOST: str = os.getenv("REDIS_HOST", "redis")
@@ -63,17 +64,9 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """Get database URL for async operations"""
-        if self.SQLALCHEMY_DATABASE_URI:
-            return self.SQLALCHEMY_DATABASE_URI
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}/{self.POSTGRES_DB}"
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 settings = Settings()
 
-# Construct SQLAlchemy Database URI after loading other settings
-if settings.POSTGRES_USER and settings.POSTGRES_PASSWORD and settings.POSTGRES_SERVER and settings.POSTGRES_DB:
-    settings.SQLALCHEMY_DATABASE_URI = settings.database_url
-else:
-    # Handle case where DB connection details might not be fully provided if app can run without DB
-    # For now, we assume they are provided if DB is intended to be used.
-    # If running in a mode that doesn't require DB, this might be None.
-    pass
+# Set the SQLAlchemy database URI using the async PostgreSQL URL
+settings.SQLALCHEMY_DATABASE_URI = settings.database_url

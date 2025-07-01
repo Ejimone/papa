@@ -262,3 +262,6 @@ class TopicStats(BaseModel):
 # Update TopicWithSubtopics forward reference
 TopicWithSubtopics.model_rebuild()
 TopicTree.model_rebuild()
+
+class TopicWithQuestionCount(TopicRead):
+    question_count: int = 0

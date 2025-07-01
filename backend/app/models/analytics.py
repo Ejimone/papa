@@ -272,3 +272,104 @@ class PerformanceTrend(Base):
 
     def __repr__(self):
         return f"<PerformanceTrend(user_id={self.user_id}, period={self.period_start}, trend='{self.trend_direction}')>"
+
+# Additional models for repository support
+class DailyUserActivity(Base):
+    __tablename__ = "daily_user_activity"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    date = Column(DateTime, nullable=False, index=True)
+    questions_attempted = Column(Integer, default=0)
+    correct_answers = Column(Integer, default=0)
+    incorrect_answers = Column(Integer, default=0)
+    study_time_minutes = Column(Integer, default=0)
+    sessions_completed = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+
+class WeeklyUserActivity(Base):
+    __tablename__ = "weekly_user_activity"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    year = Column(Integer, nullable=False, index=True)
+    week_number = Column(Integer, nullable=False, index=True)
+    questions_attempted = Column(Integer, default=0)
+    correct_answers = Column(Integer, default=0)
+    study_time_minutes = Column(Integer, default=0)
+    sessions_completed = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+
+class MonthlyUserActivity(Base):
+    __tablename__ = "monthly_user_activity"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    year = Column(Integer, nullable=False, index=True)
+    month = Column(Integer, nullable=False, index=True)
+    questions_attempted = Column(Integer, default=0)
+    correct_answers = Column(Integer, default=0)
+    study_time_minutes = Column(Integer, default=0)
+    sessions_completed = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+
+class SubjectPerformanceAnalytics(Base):
+    __tablename__ = "subject_performance_analytics"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    subject_id = Column(Integer, ForeignKey("subjects.id"), nullable=False, index=True)
+    total_attempts = Column(Integer, default=0)
+    correct_attempts = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    average_time_per_question = Column(Float, default=0.0)
+    improvement_rate = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+    subject = relationship("Subject")
+
+class TopicPerformanceAnalytics(Base):
+    __tablename__ = "topic_performance_analytics"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    topic_id = Column(Integer, ForeignKey("topics.id"), nullable=False, index=True)
+    total_attempts = Column(Integer, default=0)
+    correct_attempts = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    average_time_per_question = Column(Float, default=0.0)
+    improvement_rate = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+    topic = relationship("Topic")
+
+class DifficultyLevelAnalytics(Base):
+    __tablename__ = "difficulty_level_analytics"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    difficulty_level = Column(String(20), nullable=False, index=True)
+    total_attempts = Column(Integer, default=0)
+    correct_attempts = Column(Integer, default=0)
+    accuracy_rate = Column(Float, default=0.0)
+    average_time_per_question = Column(Float, default=0.0)
+    
+    # Relationships
+    user = relationship("User")
+
+class LearningPathAnalytics(Base):
+    __tablename__ = "learning_path_analytics"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    path_name = Column(String(100), nullable=False)
+    is_completed = Column(Boolean, default=False)
+    progress_percentage = Column(Float, default=0.0)
+    estimated_completion_time = Column(Integer, nullable=True)  # minutes
+    
+    # Relationships
+    user = relationship("User")

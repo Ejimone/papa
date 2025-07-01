@@ -684,3 +684,56 @@ GET /api/v1/analytics/progress - Learning progress tracking
 - Customer satisfaction scores
 
 ---
+
+api endopoints:
+[
+"/",
+"/api/v1/ai/adapt-difficulty",
+"/api/v1/ai/analyze-image",
+"/api/v1/ai/analyze-question",
+"/api/v1/ai/demo/analyze-text",
+"/api/v1/ai/demo/test-recommendation",
+"/api/v1/ai/health",
+"/api/v1/ai/learning-path",
+"/api/v1/ai/recommendations",
+"/api/v1/ai/similar-questions/{question_id}",
+"/api/v1/ai/submit-interaction",
+"/api/v1/ai/user-profile",
+"/api/v1/auth/login",
+"/api/v1/auth/login-json",
+"/api/v1/auth/logout",
+"/api/v1/auth/refresh",
+"/api/v1/auth/register",
+"/api/v1/auth/token",
+"/api/v1/test/database/status",
+"/api/v1/test/repository/user/active",
+"/api/v1/test/repository/user/by-university",
+"/api/v1/test/repository/user/create-sample",
+"/api/v1/test/repository/user/leaderboard",
+"/api/v1/test/repository/user/methods",
+"/api/v1/test/repository/user/search",
+"/api/v1/users/",
+"/api/v1/users/active",
+"/api/v1/users/by-university",
+"/api/v1/users/leaderboard",
+"/api/v1/users/me",
+"/api/v1/users/me/password",
+"/api/v1/users/me/profile",
+"/api/v1/users/me/statistics",
+"/api/v1/users/me/update-last-login",
+"/api/v1/users/search",
+"/api/v1/users/statistics/{user_id}",
+"/api/v1/users/test/repository-methods",
+"/api/v1/users/{user_id}",
+"/api/v1/users/{user_id}/deactivate",
+"/api/v1/users/{user_id}/reactivate"
+/api/v1/subjects/ # Subject and topic management
+/api/v1/questions/ # Question CRUD and search
+/api/v1/practice/ # Practice sessions and progress
+/api/v1/analytics/ # User analytics and insights
+/api/v1/search/ # Advanced search functionality
+/api/v1/admin/ # Administrative functions
+/api/v1/auth/ # Authentication (existing)
+/api/v1/users/ # User management (existing)
+/api/v1/ai/ # AI features (existing)
+]

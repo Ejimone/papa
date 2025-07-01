@@ -1,8 +1,32 @@
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Dict, Any, Union
 from datetime import datetime, date
-from app.schemas.base import BaseSchema
-from app.models.analytics import EventType, PerformanceLevel
+from enum import Enum
+from pydantic import BaseModel, Field, validator
+
+# Define enums locally to avoid import issues
+class EventType(str, Enum):
+    LOGIN = "login"
+    LOGOUT = "logout"
+    QUESTION_VIEW = "question_view"
+    QUESTION_ATTEMPT = "question_attempt"
+    SESSION_START = "session_start"
+    SESSION_END = "session_end"
+
+class PerformanceLevel(str, Enum):
+    BEGINNER = "beginner"
+    INTERMEDIATE = "intermediate"
+    ADVANCED = "advanced"
+    EXPERT = "expert"
+
+# Base schema class
+class BaseSchema(BaseModel):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
 
 # User Analytics Schemas
 class UserAnalyticsBase(BaseModel):
@@ -76,59 +100,35 @@ class UserAnalyticsRead(BaseSchema):
 
 # Learning Analytics Schemas
 class LearningAnalyticsBase(BaseModel):
-    week_start: date
-    week_end: date
-    questions_mastered: int = Field(default=0, ge=0)
-    concepts_learned: List[str] = []
-    difficulty_progression: float = Field(default=0.0, ge=-1.0, le=1.0)
-    mastery_level: PerformanceLevel = PerformanceLevel.BEGINNER
-    preferred_study_times: List[int] = []  # Hours of day (0-23)
-    session_lengths: List[int] = []  # Minutes
-    break_patterns: Dict[str, Any] = {}
-    learning_velocity: float = Field(default=0.0, ge=0.0)
-    retention_rate: float = Field(default=0.0, ge=0.0, le=1.0)
-    transfer_learning: float = Field(default=0.0, ge=0.0, le=1.0)
-    mental_effort_score: float = Field(default=0.0, ge=0.0, le=10.0)
-    cognitive_load_level: str = Field(default="optimal")
-    fatigue_indicators: Dict[str, Any] = {}
-    learning_style_indicators: Dict[str, Any] = {}
-    optimal_difficulty_level: float = Field(default=0.5, ge=0.0, le=1.0)
-    recommended_study_schedule: Dict[str, Any] = {}
-
-    @validator('cognitive_load_level')
-    def validate_cognitive_load(cls, v):
-        valid_levels = ['low', 'optimal', 'high', 'overload']
-        if v not in valid_levels:
-            raise ValueError(f'Cognitive load level must be one of: {valid_levels}')
-        return v
+    user_id: int
+    session_id: Optional[int] = None
+    learning_efficiency: float = 0.0
+    time_spent_learning: int = 0  # minutes
+    concepts_mastered: int = 0
+    concepts_struggling: int = 0
+    study_consistency_score: float = 0.0
+    engagement_score: float = 0.0
 
 class LearningAnalyticsCreate(LearningAnalyticsBase):
-    user_id: int
-    subject_id: int
-    topic_id: Optional[int] = None
+    pass
 
-class LearningAnalyticsRead(BaseSchema):
-    user_id: int
-    subject_id: int
-    topic_id: Optional[int]
-    week_start: datetime
-    week_end: datetime
-    questions_mastered: int
-    concepts_learned: List[str]
-    difficulty_progression: float
-    mastery_level: PerformanceLevel
-    preferred_study_times: List[int]
-    session_lengths: List[int]
-    break_patterns: Dict[str, Any]
-    learning_velocity: float
-    retention_rate: float
-    transfer_learning: float
-    mental_effort_score: float
-    cognitive_load_level: str
-    fatigue_indicators: Dict[str, Any]
-    learning_style_indicators: Dict[str, Any]
-    optimal_difficulty_level: float
-    recommended_study_schedule: Dict[str, Any]
+class LearningAnalyticsUpdate(BaseModel):
+    user_id: Optional[int] = None
+    session_id: Optional[int] = None
+    learning_efficiency: Optional[float] = None
+    time_spent_learning: Optional[int] = None
+    concepts_mastered: Optional[int] = None
+    concepts_struggling: Optional[int] = None
+    study_consistency_score: Optional[float] = None
+    engagement_score: Optional[float] = None
+
+class LearningAnalyticsRead(LearningAnalyticsBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
 
 # Question Analytics Schemas
 class QuestionAnalyticsBase(BaseModel):
@@ -469,3 +469,209 @@ class ExportRequest(BaseModel):
         if v not in valid_types:
             raise ValueError(f'Export type must be one of: {valid_types}')
         return v
+
+# Additional Analytics Repository Schemas
+class DailyUserActivityBase(BaseModel):
+    user_id: int
+    date: date
+    questions_attempted: int = 0
+    correct_answers: int = 0
+    incorrect_answers: int = 0
+    study_time_minutes: int = 0
+    sessions_completed: int = 0
+    accuracy_rate: float = 0.0
+
+class DailyUserActivityCreate(DailyUserActivityBase):
+    pass
+
+class DailyUserActivityUpdate(BaseModel):
+    questions_attempted: Optional[int] = None
+    correct_answers: Optional[int] = None
+    incorrect_answers: Optional[int] = None
+    study_time_minutes: Optional[int] = None
+    sessions_completed: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+
+class DailyUserActivityRead(DailyUserActivityBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class WeeklyUserActivityBase(BaseModel):
+    user_id: int
+    year: int
+    week_number: int
+    questions_attempted: int = 0
+    correct_answers: int = 0
+    study_time_minutes: int = 0
+    sessions_completed: int = 0
+    accuracy_rate: float = 0.0
+
+class WeeklyUserActivityCreate(WeeklyUserActivityBase):
+    pass
+
+class WeeklyUserActivityUpdate(BaseModel):
+    questions_attempted: Optional[int] = None
+    correct_answers: Optional[int] = None
+    study_time_minutes: Optional[int] = None
+    sessions_completed: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+
+class WeeklyUserActivityRead(WeeklyUserActivityBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class MonthlyUserActivityBase(BaseModel):
+    user_id: int
+    year: int
+    month: int
+    questions_attempted: int = 0
+    correct_answers: int = 0
+    study_time_minutes: int = 0
+    sessions_completed: int = 0
+    accuracy_rate: float = 0.0
+
+class MonthlyUserActivityCreate(MonthlyUserActivityBase):
+    pass
+
+class MonthlyUserActivityUpdate(BaseModel):
+    questions_attempted: Optional[int] = None
+    correct_answers: Optional[int] = None
+    study_time_minutes: Optional[int] = None
+    sessions_completed: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+
+class MonthlyUserActivityRead(MonthlyUserActivityBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class SubjectPerformanceAnalyticsBase(BaseModel):
+    user_id: int
+    subject_id: int
+    total_attempts: int = 0
+    correct_attempts: int = 0
+    accuracy_rate: float = 0.0
+    average_time_per_question: float = 0.0
+    improvement_rate: float = 0.0
+
+class SubjectPerformanceAnalyticsCreate(SubjectPerformanceAnalyticsBase):
+    pass
+
+class SubjectPerformanceAnalyticsUpdate(BaseModel):
+    total_attempts: Optional[int] = None
+    correct_attempts: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+    average_time_per_question: Optional[float] = None
+    improvement_rate: Optional[float] = None
+
+class SubjectPerformanceAnalyticsRead(SubjectPerformanceAnalyticsBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class TopicPerformanceAnalyticsBase(BaseModel):
+    user_id: int
+    topic_id: int
+    total_attempts: int = 0
+    correct_attempts: int = 0
+    accuracy_rate: float = 0.0
+    average_time_per_question: float = 0.0
+    improvement_rate: float = 0.0
+
+class TopicPerformanceAnalyticsCreate(TopicPerformanceAnalyticsBase):
+    pass
+
+class TopicPerformanceAnalyticsUpdate(BaseModel):
+    total_attempts: Optional[int] = None
+    correct_attempts: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+    average_time_per_question: Optional[float] = None
+    improvement_rate: Optional[float] = None
+
+class TopicPerformanceAnalyticsRead(TopicPerformanceAnalyticsBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class DifficultyLevelAnalyticsBase(BaseModel):
+    user_id: int
+    difficulty_level: str
+    total_attempts: int = 0
+    correct_attempts: int = 0
+    accuracy_rate: float = 0.0
+    average_time_per_question: float = 0.0
+
+class DifficultyLevelAnalyticsCreate(DifficultyLevelAnalyticsBase):
+    pass
+
+class DifficultyLevelAnalyticsUpdate(BaseModel):
+    total_attempts: Optional[int] = None
+    correct_attempts: Optional[int] = None
+    accuracy_rate: Optional[float] = None
+    average_time_per_question: Optional[float] = None
+
+class DifficultyLevelAnalyticsRead(DifficultyLevelAnalyticsBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class LearningPathAnalyticsBase(BaseModel):
+    user_id: int
+    path_name: str
+    is_completed: bool = False
+    progress_percentage: float = 0.0
+    estimated_completion_time: Optional[int] = None
+
+class LearningPathAnalyticsCreate(LearningPathAnalyticsBase):
+    pass
+
+class LearningPathAnalyticsUpdate(BaseModel):
+    is_completed: Optional[bool] = None
+    progress_percentage: Optional[float] = None
+    estimated_completion_time: Optional[int] = None
+
+class LearningPathAnalyticsRead(LearningPathAnalyticsBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# Dashboard and Report Schemas
+class DashboardQuery(BaseModel):
+    user_id: Optional[int] = None
+    days_back: int = Field(default=7, ge=1, le=365)
+
+class ReportQuery(BaseModel):
+    report_type: str = Field(..., description="Type of report to generate")
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    user_id: Optional[int] = None
+    filters: Optional[Dict[str, Any]] = None
+
+class AnalyticsExport(BaseModel):
+    export_type: str = Field(..., description="Export format: csv, json, pdf")
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    include_raw_data: bool = False

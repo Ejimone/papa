@@ -2,7 +2,7 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import update as sqlalchemy_update, delete as sqlalchemy_delete
+from sqlalchemy import update as sqlalchemy_update, delete as sqlalchemy_delete, func, text
 from app.models.base import Base # Using our custom Base with id, created_at, updated_at
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -88,3 +88,11 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         statement = select(self.model).where(getattr(self.model, attribute) == value).offset(skip).limit(limit)
         result = await db.execute(statement)
         return result.scalars().all()
+
+    async def count(self, db: AsyncSession) -> int:
+        """
+        Count total number of records in the table.
+        """
+        statement = select(func.count(self.model.id))
+        result = await db.execute(statement)
+        return result.scalar()

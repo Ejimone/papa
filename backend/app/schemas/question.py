@@ -53,6 +53,10 @@ class QuestionRead(BaseSchema):
     is_processed_for_embedding: bool
     vector_id: Optional[str]
 
+class QuestionResponse(QuestionRead):
+    """Response schema for questions with additional metadata"""
+    pass
+
 class QuestionPublic(BaseModel):
     """Public view of question (without answer for practice mode)"""
     id: int
@@ -264,6 +268,16 @@ class QuestionSearchResult(BaseModel):
 # Bulk Operations
 class QuestionBulkCreate(BaseModel):
     questions: List[QuestionCreate]
+
+class QuestionSearchResponse(BaseModel):
+    questions: List[QuestionRead]
+    total_count: int
+    query: str
+    filters_applied: Dict[str, Any] = {}
+    suggestions: List[str] = []
+    search_time_ms: float = 0.0
+    page: int = 1
+    total_pages: int = 1
     skip_validation: bool = False
     batch_size: int = Field(default=100, ge=1, le=1000)
 

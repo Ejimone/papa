@@ -1,13 +1,14 @@
 from celery import shared_task
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
+
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
 @shared_task(bind=True, max_retries=3)
-def process_question_embeddings(self, question_id: int) -> Dict[str, Any]:
+async def process_question_embeddings(self, question_id: int) -> Dict[str, Any]:
     """
     Process a question to generate embeddings and store in vector database
     """
@@ -60,7 +61,7 @@ def process_question_embeddings(self, question_id: int) -> Dict[str, Any]:
             "status": "success",
             "question_id": question_id,
             "vector_id": vector_id,
-            "processed_at": datetime.utcnow().isoformat()
+            "processed_at": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -92,7 +93,7 @@ def process_question_embeddings(self, question_id: int) -> Dict[str, Any]:
         }
 
 @shared_task(bind=True)
-def process_question_ocr(self, question_id: int, image_urls: List[str]) -> Dict[str, Any]:
+async def process_question_ocr(_, question_id: int, image_urls: List[str]) -> Dict[str, Any]:
     """
     Process images associated with a question using OCR
     """
@@ -118,7 +119,7 @@ def process_question_ocr(self, question_id: int, image_urls: List[str]) -> Dict[
                         "ocr_text": ocr_result.get("text", ""),
                         "ocr_confidence": ocr_result.get("confidence", 0.0),
                         "is_processed": True,
-                        "processed_at": datetime.utcnow()
+                        "processed_at": datetime.now(timezone.utc)
                     }
                     
                     # This would need a QuestionImageRepository
@@ -155,7 +156,7 @@ def process_question_ocr(self, question_id: int, image_urls: List[str]) -> Dict[
         }
 
 @shared_task(bind=True)
-def generate_question_explanation(self, question_id: int, explanation_type: str = "step_by_step") -> Dict[str, Any]:
+async def generate_question_explanation(_, question_id: int, explanation_type: str = "step_by_step") -> Dict[str, Any]:
     """
     Generate AI explanation for a question
     """
@@ -210,7 +211,7 @@ def generate_question_explanation(self, question_id: int, explanation_type: str 
         }
 
 @shared_task(bind=True)
-def generate_question_hints(self, question_id: int, num_hints: int = 3) -> Dict[str, Any]:
+async def generate_question_hints(_, question_id: int, num_hints: int = 3) -> Dict[str, Any]:
     """
     Generate progressive hints for a question
     """
@@ -267,7 +268,7 @@ def generate_question_hints(self, question_id: int, num_hints: int = 3) -> Dict[
         }
 
 @shared_task(bind=True)
-def find_similar_questions(self, question_id: int, similarity_threshold: float = 0.7) -> Dict[str, Any]:
+async def find_similar_questions(_, question_id: int, similarity_threshold: float = 0.7) -> Dict[str, Any]:
     """
     Find similar questions using vector similarity search
     """
@@ -325,7 +326,7 @@ def find_similar_questions(self, question_id: int, similarity_threshold: float =
         }
 
 @shared_task(bind=True)
-def extract_question_metadata(self, question_id: int) -> Dict[str, Any]:
+async def extract_question_metadata(_, question_id: int) -> Dict[str, Any]:
     """
     Extract and analyze metadata from question content
     """
@@ -381,7 +382,7 @@ def extract_question_metadata(self, question_id: int) -> Dict[str, Any]:
         }
 
 @shared_task(bind=True)
-def process_question_batch(self, question_ids: List[int], processing_steps: List[str]) -> Dict[str, Any]:
+async def process_question_batch(_, question_ids: List[int], processing_steps: List[str]) -> Dict[str, Any]:
     """
     Process multiple questions in batch
     """
@@ -438,7 +439,7 @@ def process_question_batch(self, question_ids: List[int], processing_steps: List
         }
 
 @shared_task(bind=True)
-def update_question_priority_scores(self) -> Dict[str, Any]:
+async def update_question_priority_scores(_) -> Dict[str, Any]:
     """
     Update priority scores for all questions based on various factors
     """
@@ -492,7 +493,7 @@ def update_question_priority_scores(self) -> Dict[str, Any]:
 
 # Periodic task to clean up old processing logs
 @shared_task(bind=True)
-def cleanup_processing_logs(self, days_old: int = 30) -> Dict[str, Any]:
+async def cleanup_processing_logs(_, days_old: int = 30) -> Dict[str, Any]:
     """
     Clean up old processing error logs and temporary data
     """

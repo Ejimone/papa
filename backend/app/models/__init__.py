@@ -2,7 +2,7 @@
 from .base import Base
 
 # Import all models
-from .user import User
+from .user import User, UserProfile, UserPreferences
 from .subject import Subject, Topic
 from .question import (
     Question, QuestionMetadata, QuestionImage, 
@@ -11,7 +11,7 @@ from .question import (
 )
 from .practice import (
     PracticeSession, UserAttempt, UserBookmark, 
-    UserProgress, UserProfile, UserPreferences,
+    UserProgress,
     SessionType, SessionStatus, AttemptStatus
 )
 from .analytics import (
