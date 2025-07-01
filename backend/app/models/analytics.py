@@ -192,7 +192,7 @@ class SystemAnalytics(Base):
     bandwidth_used_mb = Column(Float, default=0.0)
     
     # Additional data
-    metadata = Column(JSON, default=dict)  # Flexible field for additional metrics
+    additional_data = Column(JSON, default=dict)  # Flexible field for additional metrics
 
     def __repr__(self):
         return f"<SystemAnalytics(date={self.date}, type='{self.metric_type}', active_users={self.active_users})>"

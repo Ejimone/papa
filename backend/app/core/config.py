@@ -16,14 +16,15 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "app")
-    SQLALCHEMY_DATABASE_URI: Optional[str] = None
+    SQLALCHEMY_DATABASE_URI: str = "sqlite:///./test.db"
 
     # Redis settings
     REDIS_HOST: str = os.getenv("REDIS_HOST", "redis")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_URL: str = "redis://localhost:6379"
 
     # JWT Settings
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "a_very_secret_key_that_should_be_changed")
+    SECRET_KEY: str = "your-secret-key-here-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 # 30 minutes
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7 # 7 days
@@ -36,8 +37,9 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD: str = os.getenv("FIRST_SUPERUSER_PASSWORD", "adminpassword")
 
     # AI Service Keys
-    GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY") # General key, might be used by some Google APIs
+    GOOGLE_API_KEY: Optional[str] = None
     GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY") # Specifically for Gemini LLM
+    OPENAI_API_KEY: Optional[str] = None
 
     # Google Cloud specific (for Vertex AI, etc.)
     GOOGLE_CLOUD_PROJECT_ID: Optional[str] = os.getenv("GOOGLE_CLOUD_PROJECT_ID")
@@ -49,17 +51,27 @@ class Settings(BaseSettings):
     # CHROMA_DB_HOST: str = os.getenv("CHROMA_DB_HOST", "localhost")
     # CHROMA_DB_PORT: int = int(os.getenv("CHROMA_DB_PORT", 8000)) # Default Chroma port
 
+    # Environment
+    ENVIRONMENT: str = "development"
+    DEBUG: bool = True
 
     class Config:
         case_sensitive = True
         env_file = ".env"
         extra = "ignore"  # Ignore extra fields from .env
 
+    @property
+    def database_url(self) -> str:
+        """Get database URL for async operations"""
+        if self.SQLALCHEMY_DATABASE_URI:
+            return self.SQLALCHEMY_DATABASE_URI
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}/{self.POSTGRES_DB}"
+
 settings = Settings()
 
 # Construct SQLAlchemy Database URI after loading other settings
 if settings.POSTGRES_USER and settings.POSTGRES_PASSWORD and settings.POSTGRES_SERVER and settings.POSTGRES_DB:
-    settings.SQLALCHEMY_DATABASE_URI = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_SERVER}/{settings.POSTGRES_DB}"
+    settings.SQLALCHEMY_DATABASE_URI = settings.database_url
 else:
     # Handle case where DB connection details might not be fully provided if app can run without DB
     # For now, we assume they are provided if DB is intended to be used.
