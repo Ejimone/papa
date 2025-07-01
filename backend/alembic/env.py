@@ -26,9 +26,11 @@ from app.core.config import settings # noqa
 from app.models.base import Base # noqa
 # Import all models here so Base knows about them for 'autogenerate'
 from app.models.user import User # noqa
-# from app.models.question import Question # noqa (add other models as they are created)
+# Other models will be imported as they are created:
+# from app.models.question import Question # noqa
 # from app.models.subject import Subject # noqa
-# ... etc.
+# from app.models.practice import PracticeSession, UserAnswer # noqa
+# from app.models.analytics import UserAnalytics # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -36,8 +38,9 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+# Commented out to avoid logging config issues
+# if config.config_file_name is not None:
+#     fileConfig(config.config_file_name)
 
 # Set the sqlalchemy.url from your application settings
 # This overrides the sqlalchemy.url in alembic.ini

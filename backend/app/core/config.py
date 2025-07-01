@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7 # 7 days
 
     # CORS
-    BACKEND_CORS_ORIGINS: List[str] = ["*"] # Allow all for now, should be restricted in production
+    BACKEND_CORS_ORIGINS: List[str] = ["*"]  # Will set from env in __init__
 
     # First superuser
     FIRST_SUPERUSER_EMAIL: str = os.getenv("FIRST_SUPERUSER_EMAIL", "admin@example.com")
@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "ignore"  # Ignore extra fields from .env
 
 settings = Settings()
 

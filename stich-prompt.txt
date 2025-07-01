@@ -1,0 +1,220 @@
+# AI-Powered Past Questions App - Google Stitch Design Prompt
+
+## Project Overview
+Design a comprehensive mobile application for an AI-powered past questions learning platform that helps university students prepare for semester exams through personalized, intelligent access to past questions with adaptive learning capabilities.
+
+## App Name: "QuestionAI" or "PastGen AI"
+
+## Design Requirements
+
+### 1. Target Platform
+- **Primary**: Mobile-first design (iOS/Android)
+- **Secondary**: Responsive web version
+- **Framework**: React Native compatible designs
+
+### 2. Design Style & Theme
+- **Theme**: Modern, clean, academic-friendly
+- **Color Palette**: 
+  - Primary: Deep blue (#1E3A8A) - represents trust and learning
+  - Secondary: Emerald green (#10B981) - represents growth and success
+  - Accent: Orange (#F59E0B) - represents energy and motivation
+  - Neutral: Cool grays (#F8FAFC, #64748B, #1E293B)
+- **Typography**: Clean, readable fonts (Inter, Roboto, or system fonts)
+- **Style**: Modern Material Design 3.0 / iOS Human Interface Guidelines
+
+### 3. Key Screens to Design
+
+#### A. Authentication & Onboarding Flow
+1. **Splash Screen**
+   - App logo with animated loading
+   - Tagline: "Master Your Exams with AI"
+
+2. **Welcome/Onboarding Screens (3-4 slides)**
+   - Slide 1: "AI-Powered Learning" - Show brain/AI icon with questions floating around
+   - Slide 2: "Personalized Practice" - Show adaptive difficulty progression
+   - Slide 3: "Track Your Progress" - Show analytics dashboard preview
+   - Slide 4: "Smart Explanations" - Show AI explaining concepts
+
+3. **Authentication Screens**
+   - Login screen with email/password and social login options
+   - Registration screen with academic profile setup
+   - Forgot password screen
+
+4. **Academic Profile Setup**
+   - University selection
+   - Degree/Course selection
+   - Year of study
+   - Subjects selection (multi-select with search)
+   - Study preferences and goals
+
+#### B. Main Application Screens
+
+5. **Dashboard/Home Screen**
+   - Top section: Personalized greeting and daily streak
+   - Quick stats cards: Questions practiced today, accuracy rate, study time
+   - "Continue Learning" section with recommended questions
+   - Subject cards with progress indicators
+   - Recent activity feed
+   - Daily challenge/goal section
+
+6. **Practice/Questions Hub**
+   - Top navigation tabs: "Recommended", "Browse", "Bookmarked", "Recent"
+   - Filter/search bar with advanced filters (subject, difficulty, year, question type)
+   - Question cards showing:
+     - Subject badge
+     - Difficulty level (color-coded stars)
+     - Priority flag (high-frequency questions)
+     - Time estimate
+     - Question preview/thumbnail
+   - Floating action button for "Quick Practice"
+
+7. **Question Detail & Practice Screen**
+   - Question display area (supports text, images, mathematical equations)
+   - Answer input area (multiple choice, text input, or selection based)
+   - Timer (optional)
+   - Progress indicator (question X of Y)
+   - Bottom actions: Skip, Hint, Submit, Bookmark
+   - AI explanation panel (expandable)
+
+8. **Results & Explanation Screen**
+   - Correct/Incorrect indicator with animation
+   - Your answer vs correct answer comparison
+   - AI-powered step-by-step explanation
+   - Related concepts and similar questions
+   - "Practice Similar" and "Continue" buttons
+   - Performance impact indicator
+
+9. **Analytics Dashboard**
+   - Performance overview cards
+   - Subject-wise progress charts (circular progress, bar charts)
+   - Weekly/monthly performance trends
+   - Strength and weakness analysis
+   - Time spent studying analytics
+   - Achievement badges and milestones
+   - Comparative performance (anonymous peer comparison)
+
+10. **Subject Detail Screen**
+    - Subject overview and progress
+    - Topic breakdown with completion percentages
+    - Recently practiced questions in this subject
+    - Recommended study path
+    - Subject-specific achievements
+
+11. **Profile & Settings Screen**
+    - User avatar and basic info
+    - Academic profile (editable)
+    - Study preferences and goals
+    - Notification settings
+    - Dark/light mode toggle
+    - Account settings and privacy
+    - Help and support
+
+#### C. Advanced Features Screens
+
+12. **AI Chat/Help Screen**
+    - Chat interface for asking questions about concepts
+    - AI tutor avatar
+    - Question history
+    - Quick action buttons for common queries
+
+13. **Mock Test Interface**
+    - Pre-test setup (duration, subject, difficulty)
+    - Full-screen test mode
+    - Question navigation sidebar
+    - Timer and progress
+    - Test results and detailed analysis
+
+14. **Search Results Screen**
+    - Search filters and sorting options
+    - Question results with relevance scoring
+    - Semantic search results ("Questions similar to your query")
+
+### 4. UI Components & Patterns
+
+#### Navigation
+- **Bottom Tab Navigation** (4-5 tabs):
+  - Home (dashboard icon)
+  - Practice (questions/book icon) 
+  - Analytics (chart icon)
+  - Profile (user icon)
+  - Optional: AI Chat (robot icon)
+
+#### Key UI Elements
+- **Question Cards**: Clean cards with subject badges, difficulty indicators, and preview text
+- **Progress Indicators**: Circular progress rings, linear progress bars
+- **Stat Cards**: Colorful cards showing key metrics with icons
+- **Filter Chips**: Pill-shaped filter tags that can be selected/deselected
+- **Subject Badges**: Color-coded badges for different subjects
+- **Difficulty Stars**: 1-5 star rating system with color coding
+- **AI Elements**: Subtle AI indicators, chat bubbles, brain icons
+
+#### Micro-interactions
+- Loading animations for AI processing
+- Success/error feedback animations
+- Smooth transitions between screens
+- Pull-to-refresh gestures
+- Swipe gestures for question navigation
+
+### 5. Specific Design Requests
+
+#### Priority Features to Highlight
+1. **AI-Powered Explanations**: Show clear visual hierarchy for AI-generated content
+2. **Adaptive Difficulty**: Visual indicators showing how difficulty adjusts based on performance
+3. **Progress Tracking**: Rich analytics with multiple chart types
+4. **Personalization**: Visual elements that show the app "knows" the user
+
+#### Accessibility Requirements
+- High contrast ratios for text
+- Large touch targets (minimum 44px)
+- Clear visual hierarchy
+- Support for screen readers
+- Dark mode compatibility
+
+### 6. Sample Content for Mockups
+
+#### Example Questions
+- "Solve for x: 2x + 5 = 15" (Mathematics)
+- "Explain the process of photosynthesis" (Biology)
+- "What is the time complexity of binary search?" (Computer Science)
+- "Analyze the causes of World War I" (History)
+
+#### Example Subjects
+- Mathematics, Physics, Chemistry, Biology
+- Computer Science, Engineering, Business
+- History, Literature, Psychology
+
+#### Sample User Data
+- User: "Alex Johnson", 3rd Year Computer Science
+- University: "State University"
+- Current Streak: 15 days
+- Questions Practiced: 1,247
+- Accuracy Rate: 78%
+
+### 7. Technical Considerations for Export
+- Design should be compatible with React Native components
+- Use standard mobile UI patterns and gestures
+- Ensure scalability for different screen sizes
+- Consider offline state indicators
+- Plan for loading states and error conditions
+
+### 8. Brand Personality
+- **Intelligent**: Show smart features without being intimidating
+- **Supportive**: Encouraging tone in copy and visual feedback
+- **Academic**: Professional but not boring
+- **Adaptive**: Show how the app learns and grows with the user
+
+## Deliverables Expected
+1. Complete mobile app UI design with all major screens
+2. Component library showing reusable elements
+3. Navigation flow diagrams
+4. Figma-compatible designs for further refinement
+5. Responsive layouts for tablet/web versions
+
+## Additional Notes
+- Focus on creating an engaging learning experience
+- Emphasize the AI-powered features throughout the design
+- Ensure the design scales well for different content types (text, images, equations)
+- Consider gamification elements to encourage consistent usage
+- Design should feel modern and competitive with leading educational apps
+
+Please generate comprehensive UI designs for this AI-powered past questions learning application, ensuring all screens work together cohesively and provide an excellent user experience for university students.

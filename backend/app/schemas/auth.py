@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
+from typing import Optional
 
 class Token(BaseModel):
     access_token: str
@@ -10,14 +11,14 @@ class TokenPayload(BaseModel):
     exp: Optional[int] = None # Expiry timestamp
 
 class LoginRequest(BaseModel):
-    email: EmailStr # Or username, depending on login preference
+    email: str # Or username, depending on login preference
     password: str
 
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
 class PasswordResetRequest(BaseModel):
-    email: EmailStr
+    email: str
 
 class PasswordResetConfirm(BaseModel):
     token: str

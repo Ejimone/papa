@@ -1,17 +1,17 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from app.schemas.base import BaseSchema # For id, created_at, updated_at
 
 # Properties to receive via API on creation
 class UserCreate(BaseModel):
-    email: EmailStr
+    email: str
     username: Optional[str] = None
     password: str = Field(min_length=8)
 
 # Properties to receive via API on update
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     username: Optional[str] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None
@@ -22,7 +22,7 @@ class UserPasswordUpdate(BaseModel):
 
 # Properties stored in DB
 class UserInDBBase(BaseSchema): # Inherits id, created_at, updated_at
-    email: EmailStr
+    email: str
     username: Optional[str] = None
     is_active: bool = True
     is_superuser: bool = False
