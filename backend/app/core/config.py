@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     REDIS_HOST: str = os.getenv("REDIS_HOST", "redis")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
     REDIS_URL: str = "redis://localhost:6379"
+    
+    # Celery Configuration
+    celery_broker_url: str = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/1")
+    celery_result_backend: str = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/2")
 
     # JWT Settings
     SECRET_KEY: str = "your-secret-key-here-change-in-production"

@@ -17,7 +17,10 @@ from .practice import (
 from .analytics import (
     UserAnalytics, LearningAnalytics, QuestionAnalytics, 
     SystemAnalytics, UserEvent, PerformanceTrend,
-    EventType, PerformanceLevel
+    EventType, PerformanceLevel,
+    DailyUserActivity, WeeklyUserActivity, MonthlyUserActivity,
+    SubjectPerformanceAnalytics, TopicPerformanceAnalytics,
+    DifficultyLevelAnalytics, LearningPathAnalytics
 )
 from .associations import (
     StudyGroup, user_subjects, user_topic_interests, 
@@ -48,6 +51,9 @@ __all__ = [
     "UserAnalytics", "LearningAnalytics", "QuestionAnalytics",
     "SystemAnalytics", "UserEvent", "PerformanceTrend",
     "EventType", "PerformanceLevel",
+    "DailyUserActivity", "WeeklyUserActivity", "MonthlyUserActivity",
+    "SubjectPerformanceAnalytics", "TopicPerformanceAnalytics",
+    "DifficultyLevelAnalytics", "LearningPathAnalytics",
     
     # Association models
     "StudyGroup", "user_subjects", "user_topic_interests",
