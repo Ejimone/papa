@@ -5,6 +5,7 @@ import logging
 import base64
 from datetime import datetime
 import uuid
+from pydantic import BaseModel
 
 from app.schemas.user import UserRead
 from app.schemas.question import QuestionCreate, QuestionResponse
@@ -31,6 +32,19 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+# Chat request/response models
+class AskQuestionRequest(BaseModel):
+    question: str
+    context: Optional[str] = "general_study_help"
+    subject: Optional[str] = None
+    previous_messages: Optional[List[Dict[str, str]]] = []
+
+class AskQuestionResponse(BaseModel):
+    answer: str
+    confidence: float
+    sources: List[str] = []
+    suggestions: List[str] = []
+
 # Initialize AI services (these would typically be dependency injected)
 text_processor = TextProcessor(use_advanced_nlp=False)
 image_processor = ImageProcessor(use_mock=settings.DEBUG)
@@ -44,15 +58,55 @@ learning_path_generator = LearningPathGenerator(difficulty_adapter)
 # New AI service instances
 try:
     text_embedding_service = TextEmbeddingService()
-    image_embedding_service = ImageEmbeddingService()
-    hybrid_embedding_service = HybridEmbeddingService()
-    gemini_client = GeminiClient()
+    image_embedding_service = ImageEmbeddingService(use_mock=settings.DEBUG)
+    hybrid_embedding_service = HybridEmbeddingService(text_embedding_service, image_embedding_service)
+    gemini_client = GeminiClient() if settings.GOOGLE_API_KEY else None
+    logger.info("AI services initialized successfully")
 except Exception as e:
-    logger.warning(f"Some AI services failed to initialize: {e}")
+    logger.error(f"Failed to initialize AI services: {e}")
     text_embedding_service = None
     image_embedding_service = None
     hybrid_embedding_service = None
     gemini_client = None
+
+@router.post("/ask-question")
+async def ask_ai_question(
+    request: AskQuestionRequest,
+    current_user: UserRead = Depends(get_current_user)
+):
+    """
+    Ask the AI assistant a general question about studies, subjects, or practice questions.
+    """
+    try:
+        # Simple AI response for now
+        ai_response = f"I understand you're asking about: {request.question}. This is a great question about {request.subject or 'your studies'}! While I'm still learning, I can help you explore the app to find practice questions, study materials, and track your progress."
+        
+        # Generate helpful suggestions
+        suggestions = [
+            "Try the Practice section for hands-on questions",
+            "Check the Learn section for study materials",
+            "Use the Search feature to find specific topics"
+        ]
+        
+        return {
+            "answer": ai_response,
+            "confidence": 0.7,
+            "sources": ["AI Study Assistant"],
+            "suggestions": suggestions
+        }
+        
+    except Exception as e:
+        logger.error(f"Error processing AI question: {e}")
+        return {
+            "answer": "I'm here to help! Try asking me about specific subjects, practice questions, or study tips. You can also explore the app's Practice and Learn sections for immediate help.",
+            "confidence": 0.5,
+            "sources": ["AI Study Assistant"],
+            "suggestions": [
+                "Try rephrasing your question",
+                "Explore the Practice section",
+                "Check the Learn materials"
+            ]
+        }
 
 # Pydantic schemas for AI endpoints
 from pydantic import BaseModel, Field
