@@ -187,7 +187,7 @@ async def get_users_by_university(
 
 @router.get("/leaderboard", response_model=List[Dict[str, Any]])
 async def get_leaderboard(
-    metric: str = Query("accuracy", regex="^(accuracy|volume)$", description="Leaderboard metric"),
+    metric: str = Query("accuracy", pattern="^(accuracy|volume)$", description="Leaderboard metric"),
     days: int = Query(30, ge=1, le=365, description="Number of days to look back"),
     limit: int = Query(10, ge=1, le=100, description="Number of top users to return"),
     db: AsyncSession = Depends(get_db),

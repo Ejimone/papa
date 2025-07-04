@@ -58,9 +58,9 @@ learning_path_generator = LearningPathGenerator(difficulty_adapter)
 # New AI service instances
 try:
     text_embedding_service = TextEmbeddingService()
-    image_embedding_service = ImageEmbeddingService(use_mock=settings.DEBUG)
+    image_embedding_service = ImageEmbeddingService()
     hybrid_embedding_service = HybridEmbeddingService(text_embedding_service, image_embedding_service)
-    gemini_client = GeminiClient() if settings.GOOGLE_API_KEY else None
+    gemini_client = GeminiClient() if settings.GEMINI_API_KEY else None
     logger.info("AI services initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize AI services: {e}")

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, field_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from app.schemas.base import BaseSchema
@@ -19,13 +19,15 @@ class SubjectBase(BaseModel):
     tags: List[str] = []
     prerequisites: List[str] = []
 
-    @validator('code')
+    @field_validator('code')
+    @classmethod
     def validate_code(cls, v):
         if v and not v.replace(' ', '').replace('-', '').isalnum():
             raise ValueError('Subject code must contain only alphanumeric characters, spaces, and hyphens')
         return v
 
-    @validator('academic_year')
+    @field_validator('academic_year')
+    @classmethod
     def validate_academic_year(cls, v):
         if v and not (len(v.split('-')) == 2 and all(part.isdigit() and len(part) == 4 for part in v.split('-'))):
             raise ValueError('Academic year must be in format YYYY-YYYY (e.g., 2023-2024)')
@@ -99,7 +101,8 @@ class TopicBase(BaseModel):
     tags: List[str] = []
     keywords: List[str] = []
 
-    @validator('difficulty_level')
+    @field_validator('difficulty_level')
+    @classmethod
     def validate_difficulty_level(cls, v):
         valid_levels = ['beginner', 'intermediate', 'advanced', 'expert']
         if v not in valid_levels:
@@ -196,14 +199,16 @@ class SubjectSearch(BaseModel):
     sort_by: str = Field(default="name")
     sort_order: str = Field(default="asc")
 
-    @validator('sort_by')
+    @field_validator('sort_by')
+    @classmethod
     def validate_sort_by(cls, v):
         valid_fields = ['name', 'code', 'level', 'credits', 'total_questions', 'created_at']
         if v not in valid_fields:
             raise ValueError(f'Sort field must be one of: {valid_fields}')
         return v
 
-    @validator('sort_order')
+    @field_validator('sort_order')
+    @classmethod
     def validate_sort_order(cls, v):
         if v not in ['asc', 'desc']:
             raise ValueError('Sort order must be "asc" or "desc"')

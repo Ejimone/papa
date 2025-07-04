@@ -47,7 +47,46 @@ async def get_subjects_with_topics(
         
         result = await db.execute(query)
         subjects = result.scalars().all()
-        return subjects
+        
+        # Convert to schema format
+        subject_list = []
+        for subject in subjects:
+            subject_dict = {
+                "id": subject.id,
+                "created_at": subject.created_at,
+                "updated_at": subject.updated_at,
+                "name": subject.name,
+                "code": subject.code,
+                "description": subject.description,
+                "department": subject.department,
+                "level": subject.level,
+                "credits": subject.credits,
+                "academic_year": subject.academic_year,
+                "semester": subject.semester,
+                "instructor": subject.instructor,
+                "category": subject.category,
+                "subcategory": subject.subcategory,
+                "tags": subject.tags or [],
+                "prerequisites": subject.prerequisites or [],
+                "is_active": subject.is_active,
+                "is_popular": subject.is_popular,
+                "total_questions": subject.total_questions,
+                "total_students": subject.total_students,
+                "difficulty_average": subject.difficulty_average,
+                "topics": [
+                    {
+                        "id": topic.id,
+                        "name": topic.name,
+                        "description": topic.description,
+                        "subject_id": topic.subject_id,
+                        "level": topic.level,
+                        "is_active": topic.is_active
+                    } for topic in subject.topics
+                ]
+            }
+            subject_list.append(subject_dict)
+        
+        return subject_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

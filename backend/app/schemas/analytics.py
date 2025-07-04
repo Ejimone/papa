@@ -1,8 +1,7 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, field_validator
 from typing import Optional, List, Dict, Any, Union
 from datetime import datetime, date
 from enum import Enum
-from pydantic import BaseModel, Field, validator
 
 # Define enums locally to avoid import issues
 class EventType(str, Enum):
@@ -286,14 +285,16 @@ class PerformanceTrendBase(BaseModel):
     confidence_level: Optional[float] = Field(None, ge=0.0, le=100.0)
     factors_influencing: List[str] = []
 
-    @validator('period_type')
+    @field_validator('period_type')
+    @classmethod
     def validate_period_type(cls, v):
         valid_types = ['daily', 'weekly', 'monthly', 'quarterly', 'yearly']
         if v not in valid_types:
             raise ValueError(f'Period type must be one of: {valid_types}')
         return v
 
-    @validator('trend_direction')
+    @field_validator('trend_direction')
+    @classmethod
     def validate_trend_direction(cls, v):
         if v is not None:
             valid_directions = ['improving', 'declining', 'stable', 'fluctuating']
@@ -332,9 +333,10 @@ class AnalyticsDateRange(BaseModel):
     start_date: date
     end_date: date
 
-    @validator('end_date')
-    def validate_date_range(cls, v, values):
-        if 'start_date' in values and v < values['start_date']:
+    @field_validator('end_date')
+    @classmethod
+    def validate_date_range(cls, v, info):
+        if info.data.get('start_date') and v < info.data['start_date']:
             raise ValueError('End date must be after start date')
         return v
 
@@ -356,7 +358,8 @@ class AnalyticsAggregation(BaseModel):
     include_trends: bool = False
     include_predictions: bool = False
 
-    @validator('aggregation_period')
+    @field_validator('aggregation_period')
+    @classmethod
     def validate_aggregation_period(cls, v):
         valid_periods = ['hourly', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']
         if v not in valid_periods:
@@ -371,7 +374,8 @@ class AnalyticsQuery(BaseModel):
     sort_by: str = Field(default="date")
     sort_order: str = Field(default="desc")
 
-    @validator('sort_order')
+    @field_validator('sort_order')
+    @classmethod
     def validate_sort_order(cls, v):
         if v not in ['asc', 'desc']:
             raise ValueError('Sort order must be "asc" or "desc"')
@@ -427,14 +431,16 @@ class ReportRequest(BaseModel):
     include_raw_data: bool = False
     format: str = Field(default="json")  # json, csv, pdf
 
-    @validator('report_type')
+    @field_validator('report_type')
+    @classmethod
     def validate_report_type(cls, v):
         valid_types = ['user_progress', 'system_performance', 'content_analytics', 'learning_patterns', 'engagement']
         if v not in valid_types:
             raise ValueError(f'Report type must be one of: {valid_types}')
         return v
 
-    @validator('format')
+    @field_validator('format')
+    @classmethod
     def validate_format(cls, v):
         valid_formats = ['json', 'csv', 'pdf', 'excel']
         if v not in valid_formats:
@@ -463,7 +469,8 @@ class ExportRequest(BaseModel):
     include_headers: bool = True
     date_range: Optional[AnalyticsDateRange] = None
 
-    @validator('export_type')
+    @field_validator('export_type')
+    @classmethod
     def validate_export_type(cls, v):
         valid_types = ['user_data', 'analytics', 'questions', 'sessions', 'events']
         if v not in valid_types:
