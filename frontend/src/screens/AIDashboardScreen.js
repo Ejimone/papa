@@ -31,9 +31,9 @@ const AIDashboardScreen = ({ navigation }) => {
   // Sample quick actions
   const quickActions = [
     { id: 1, title: 'Start Practice', icon: '📝', action: () => navigation.navigate('Practice') },
-    { id: 2, title: 'Browse Questions', icon: '🔍', action: () => navigation.navigate('Questions') },
-    { id: 3, title: 'View Subjects', icon: '📚', action: () => navigation.navigate('Subjects') },
-    { id: 4, title: 'My Progress', icon: '📈', action: () => navigation.navigate('Analytics') },
+    { id: 2, title: 'Browse Subjects', icon: '📚', action: () => navigation.navigate('Learn', { screen: 'Subjects' }) },
+    { id: 3, title: 'Search Questions', icon: '🔍', action: () => navigation.navigate('Search') },
+    { id: 4, title: 'Upload Questions', icon: '📤', action: () => navigation.navigate('Learn', { screen: 'Upload' }) },
   ];
 
   const handleSendMessage = async () => {

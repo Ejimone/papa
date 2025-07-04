@@ -16,7 +16,7 @@ export const aiService = {
         sources: ["AI Study Assistant"],
         suggestions: [
           "Try the Practice section for hands-on questions", 
-          "Check the Learn section for study materials",
+          "Browse Subjects in the Learn section",
           "Use the Search feature to find specific topics"
         ]
       };
@@ -29,7 +29,7 @@ export const aiService = {
         suggestions: [
           "Try rephrasing your question",
           "Explore the Practice section", 
-          "Check the Learn materials"
+          "Browse Subjects in the Learn section"
         ]
       };
     }

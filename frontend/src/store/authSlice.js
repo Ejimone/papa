@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authService } from '../api/authService';
-import { tokenManager } from '../api/client';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { authService } from "../api/authService";
+import { tokenManager } from "../api/client";
 
 // Async thunks for authentication
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await authService.login({ email, password });
@@ -16,7 +16,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const registerUser = createAsyncThunk(
-  'auth/registerUser',
+  "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await authService.register(userData);
@@ -28,7 +28,7 @@ export const registerUser = createAsyncThunk(
 );
 
 export const refreshToken = createAsyncThunk(
-  'auth/refreshToken',
+  "auth/refreshToken",
   async (_, { rejectWithValue }) => {
     try {
       const response = await authService.refreshToken();
@@ -40,7 +40,7 @@ export const refreshToken = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
+  "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
       await authService.logout();
@@ -54,17 +54,17 @@ export const logoutUser = createAsyncThunk(
 );
 
 export const checkAuthStatus = createAsyncThunk(
-  'auth/checkAuthStatus',
+  "auth/checkAuthStatus",
   async (_, { rejectWithValue }) => {
     try {
       const isAuthenticated = await authService.isAuthenticated();
       const token = await tokenManager.getToken();
-      
+
       if (isAuthenticated && token) {
         // Optionally fetch user data here
         return { isAuthenticated: true, token };
       }
-      
+
       return { isAuthenticated: false, token: null };
     } catch (error) {
       return rejectWithValue(error);
@@ -73,7 +73,7 @@ export const checkAuthStatus = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     isAuthenticated: false,
     user: null,
@@ -95,6 +95,12 @@ const authSlice = createSlice({
       state.token = null;
       state.error = null;
     },
+    logout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -113,9 +119,9 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
-        state.error = action.payload?.detail || 'Login failed';
+        state.error = action.payload?.detail || "Login failed";
       })
-      
+
       // Register
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
@@ -128,9 +134,9 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.detail || 'Registration failed';
+        state.error = action.payload?.detail || "Registration failed";
       })
-      
+
       // Refresh Token
       .addCase(refreshToken.pending, (state) => {
         state.refreshing = true;
@@ -146,7 +152,7 @@ const authSlice = createSlice({
         state.token = null;
         state.user = null;
       })
-      
+
       // Logout
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
@@ -165,7 +171,7 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
       })
-      
+
       // Check Auth Status
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         state.isAuthenticated = action.payload.isAuthenticated;
@@ -179,7 +185,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, setUser, clearAuth } = authSlice.actions;
+export const { clearError, setUser, clearAuth, logout } = authSlice.actions;
 
 // Selectors
 export const selectAuth = (state) => state.auth;
