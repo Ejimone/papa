@@ -13,6 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
+import uploadService from "../api/uploadService";
+import apiClient from "../api/client";
 
 const UploadScreen = ({ navigation }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -159,56 +161,36 @@ const UploadScreen = ({ navigation }) => {
     setUploading(true);
 
     try {
-      const uploadPromises = selectedFiles.map(async (file) => {
-        const formData = new FormData();
+      // Prepare file objects for upload
+      const files = selectedFiles.map((file) => ({
+        uri: file.uri,
+        type: file.type === "image" 
+          ? file.mimeType || "image/jpeg" 
+          : file.mimeType || "application/pdf",
+        name: file.name,
+      }));
 
-        formData.append("file", {
-          uri: file.uri,
-          type:
-            file.type === "image"
-              ? file.mimeType || "image/jpeg"
-              : file.mimeType || "application/pdf",
-          name: file.name,
-        });
+      // Upload as course materials with question extraction enabled
+      const uploadData = {
+        subject_id: 1, // TODO: Allow user to select subject
+        title: subject || "Uploaded Questions",
+        description: description || "Questions uploaded from mobile app",
+        material_type: "past_questions",
+        tags: topic ? `mobile_upload,${topic}` : "mobile_upload",
+        enable_rag: true,
+        auto_extract_questions: true,
+        files: files,
+      };
 
-        const uploadEndpoint =
-          file.type === "image" ? "/upload/image" : "/upload/document";
+      console.log("Uploading files with data:", uploadData);
 
-        console.log(`Uploading ${file.name} to ${uploadEndpoint}`);
-        console.log(`Using token: ${token ? "Present" : "Missing"}`);
+      const result = await uploadService.uploadCourseMaterials(uploadData);
 
-        const response = await fetch(
-          `http://172.16.0.58:4321/api/v1${uploadEndpoint}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
-
-        console.log(`Upload response status: ${response.status}`);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`Upload failed: ${response.status} - ${errorText}`);
-          throw new Error(
-            `Upload failed: ${response.status} ${response.statusText}`
-          );
-        }
-
-        return await response.json();
-      });
-
-      const uploadResults = await Promise.all(uploadPromises);
-
-      // Process uploaded files with AI
-      await processUploadedFiles(uploadResults);
+      console.log("Upload result:", result);
 
       Alert.alert(
         "Upload Successful!",
-        `Successfully uploaded ${uploadResults.length} file(s). They will be processed and added to your question bank.`,
+        `Successfully uploaded ${result.uploaded_files.length} file(s). They will be processed and added to your question bank.`,
         [
           {
             text: "OK",
@@ -224,40 +206,12 @@ const UploadScreen = ({ navigation }) => {
       );
     } catch (error) {
       console.error("Upload error:", error);
-      Alert.alert("Upload Failed", "Failed to upload files. Please try again.");
+      Alert.alert(
+        "Upload Failed", 
+        error.response?.data?.detail || "Failed to upload files. Please try again."
+      );
     } finally {
       setUploading(false);
-    }
-  };
-
-  const processUploadedFiles = async (uploadResults) => {
-    try {
-      for (const uploadResult of uploadResults) {
-        const processData = {
-          question_text: description || "Uploaded question document",
-          subject: subject || "General",
-          topic: topic || "Mixed Topics",
-          image_urls: uploadResult.type === "image" ? [uploadResult.url] : [],
-          generate_explanations: true,
-          generate_hints: true,
-          find_similar: true,
-        };
-
-        const aiHeaders = {
-          "Content-Type": "application/json",
-        };
-        if (token) {
-          aiHeaders["Authorization"] = `Bearer ${token}`;
-        }
-
-        await fetch("http://172.16.0.58:4321/api/v1/ai/process-question", {
-          method: "POST",
-          headers: aiHeaders,
-          body: JSON.stringify(processData),
-        });
-      }
-    } catch (error) {
-      console.log("AI processing will continue in background:", error.message);
     }
   };
 

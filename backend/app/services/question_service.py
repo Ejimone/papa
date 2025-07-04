@@ -340,3 +340,40 @@ class QuestionService(BaseService[Question, QuestionCreate, QuestionUpdate]):
         except Exception as e:
             logger.error(f"Error getting question stats: {str(e)}")
             raise HTTPException(status_code=500, detail="Database error")
+    
+    async def create_from_dict(self, question_data: Dict[str, Any]) -> Question:
+        """Create question from dictionary data (useful for AI-generated questions)"""
+        try:
+            # Extract question data
+            question_create = QuestionCreate(
+                title=question_data.get('title', ''),
+                content=question_data.get('content', ''),
+                answer=question_data.get('answer', ''),
+                question_type=question_data.get('question_type', 'short_answer'),
+                difficulty_level=question_data.get('difficulty_level', 'intermediate'),
+                subject_id=question_data.get('subject_id'),
+                topic_id=question_data.get('topic_id'),
+                points=question_data.get('points', 1),
+                time_limit=question_data.get('time_limit'),
+                options=question_data.get('options', []),
+                created_by=question_data.get('created_by')
+            )
+            
+            # Create the question
+            question = await self.create(question_create)
+            
+            # Add metadata if provided
+            if question_data.get('keywords') or question_data.get('source'):
+                metadata_create = QuestionMetadataCreate(
+                    tags=question_data.get('keywords', []),
+                    source=question_data.get('source', 'AI_extracted'),
+                    priority_score=1.0,
+                    frequency_score=1.0
+                )
+                await self.add_metadata(question.id, metadata_create)
+            
+            return question
+            
+        except Exception as e:
+            logger.error(f"Error creating question from dict: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to create question")

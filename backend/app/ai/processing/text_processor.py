@@ -55,6 +55,14 @@ class TextAnalysisResult:
     mathematical_expressions: List[str]
     language_detected: str = "en"
 
+@dataclass
+class TextChunk:
+    text: str
+    chunk_type: str
+    start_pos: int
+    end_pos: int
+    metadata: Dict[str, Any]
+
 class TextProcessor:
     def __init__(self, use_advanced_nlp: bool = True):
         self.use_advanced_nlp = use_advanced_nlp and (SPACY_AVAILABLE or NLTK_AVAILABLE)
@@ -551,3 +559,89 @@ class TextProcessor:
             patterns['answer_length'] = 'short'
         
         return patterns
+
+    async def chunk_text_for_rag(self, text: str, chunk_size: int = 1000, overlap: int = 200) -> List[TextChunk]:
+        """
+        Split text into chunks for RAG (Retrieval-Augmented Generation) processing.
+        
+        Args:
+            text: The text to chunk
+            chunk_size: Maximum size of each chunk in characters
+            overlap: Number of characters to overlap between chunks
+            
+        Returns:
+            List of TextChunk objects
+        """
+        chunks = []
+        
+        # Clean the text first
+        cleaned_text = self._clean_text(text)
+        
+        # Split into sentences for better chunk boundaries
+        if self.use_advanced_nlp and self.nlp_model:
+            doc = self.nlp_model(cleaned_text)
+            sentences = [sent.text.strip() for sent in doc.sents]
+        elif NLTK_AVAILABLE:
+            sentences = sent_tokenize(cleaned_text)
+        else:
+            # Simple sentence splitting
+            sentences = re.split(r'[.!?]+', cleaned_text)
+            sentences = [s.strip() for s in sentences if s.strip()]
+        
+        current_chunk = ""
+        current_start = 0
+        chunk_index = 0
+        
+        for sentence in sentences:
+            # Check if adding this sentence would exceed chunk size
+            if len(current_chunk) + len(sentence) + 1 > chunk_size and current_chunk:
+                # Create chunk
+                chunk = TextChunk(
+                    text=current_chunk.strip(),
+                    chunk_type="text_segment",
+                    start_pos=current_start,
+                    end_pos=current_start + len(current_chunk),
+                    metadata={
+                        "chunk_index": chunk_index,
+                        "word_count": len(current_chunk.split()),
+                        "sentence_count": len([s for s in current_chunk.split('.') if s.strip()])
+                    }
+                )
+                chunks.append(chunk)
+                
+                # Start new chunk with overlap
+                if overlap > 0:
+                    # Take last part of current chunk for overlap
+                    overlap_text = current_chunk[-overlap:] if len(current_chunk) > overlap else current_chunk
+                    current_chunk = overlap_text + " " + sentence
+                    current_start = chunk.end_pos - len(overlap_text)
+                else:
+                    current_chunk = sentence
+                    current_start = chunk.end_pos
+                
+                chunk_index += 1
+            else:
+                # Add sentence to current chunk
+                if current_chunk:
+                    current_chunk += " " + sentence
+                else:
+                    current_chunk = sentence
+        
+        # Add final chunk if there's remaining text
+        if current_chunk.strip():
+            chunk = TextChunk(
+                text=current_chunk.strip(),
+                chunk_type="text_segment",
+                start_pos=current_start,
+                end_pos=current_start + len(current_chunk),
+                metadata={
+                    "chunk_index": chunk_index,
+                    "word_count": len(current_chunk.split()),
+                    "sentence_count": len([s for s in current_chunk.split('.') if s.strip()])
+                }
+            )
+            chunks.append(chunk)
+        
+        return chunks
+
+    # ...existing methods...

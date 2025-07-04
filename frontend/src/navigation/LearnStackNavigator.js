@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SubjectsScreen from '../screens/SubjectsScreen';
 import TopicsScreen from '../screens/TopicsScreen';
 import UploadScreen from '../screens/UploadScreen';
+import CourseMaterialsUploadScreen from '../screens/CourseMaterialsUploadScreen';
 
 import QuestionListScreen from '../screens/QuestionListScreen';
 import QuestionDetailScreen from '../screens/QuestionDetailScreen';
@@ -15,6 +16,7 @@ const LearnStackNavigator = () => {
     <Stack.Navigator>
       <Stack.Screen name="Subjects" component={SubjectsScreen} />
       <Stack.Screen name="Upload" component={UploadScreen} options={{ title: 'Upload Questions' }} />
+      <Stack.Screen name="CourseMaterials" component={CourseMaterialsUploadScreen} options={{ title: 'Upload Course Materials' }} />
       <Stack.Screen name="Topics" component={TopicsScreen} />
       <Stack.Screen name="QuestionList" component={QuestionListScreen} />
       <Stack.Screen name="QuestionDetail" component={QuestionDetailScreen} />

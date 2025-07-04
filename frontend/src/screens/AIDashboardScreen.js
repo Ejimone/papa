@@ -34,6 +34,7 @@ const AIDashboardScreen = ({ navigation }) => {
     { id: 2, title: 'Browse Subjects', icon: '📚', action: () => navigation.navigate('Learn', { screen: 'Subjects' }) },
     { id: 3, title: 'Search Questions', icon: '🔍', action: () => navigation.navigate('Search') },
     { id: 4, title: 'Upload Questions', icon: '📤', action: () => navigation.navigate('Learn', { screen: 'Upload' }) },
+    { id: 5, title: 'Course Materials', icon: '📖', action: () => navigation.navigate('Learn', { screen: 'CourseMaterials' }) },
   ];
 
   const handleSendMessage = async () => {
@@ -100,9 +101,9 @@ const AIDashboardScreen = ({ navigation }) => {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Study Assistant</Text>
+        <Text style={styles.headerTitle}>My-Ace</Text>
         <Text style={styles.headerSubtitle}>
-          Welcome back, {user?.username || 'Student'}! 👋
+          Welcome back, {user?.username || 'OpenCode'}! 😎
         </Text>
       </View>
 

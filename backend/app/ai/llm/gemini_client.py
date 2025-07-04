@@ -76,6 +76,101 @@ class GeminiClient:
         variations = [q.strip() for q in response_text.split('\n') if q.strip()]
         return variations[:num_variations]
 
+    async def extract_questions_from_text(self, text: str, subject_id: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Extracts questions from a given text using AI.
+        Returns a list of question dictionaries.
+        """
+        try:
+            prompt = f"""
+            Extract questions from the following text. For each question found, provide:
+            1. The question content
+            2. The answer (if available)
+            3. Question type (multiple_choice, short_answer, essay, true_false, numerical, etc.)
+            4. Difficulty level (beginner, intermediate, advanced)
+            5. Any options (for multiple choice questions)
+            6. Keywords/topics related to the question
+
+            Text to analyze:
+            {text}
+
+            Return the response in JSON format as an array of objects with these fields:
+            - title: Brief title for the question
+            - content: The full question text
+            - answer: The answer if available
+            - question_type: Type of question
+            - difficulty_level: Difficulty level
+            - options: Array of options for multiple choice (empty array if not applicable)
+            - keywords: Array of relevant keywords
+            - points: Suggested points for grading (default 1)
+
+            Example format:
+            [
+                {{
+                    "title": "Question about X",
+                    "content": "What is X?",
+                    "answer": "X is...",
+                    "question_type": "short_answer",
+                    "difficulty_level": "intermediate",
+                    "options": [],
+                    "keywords": ["X", "concept"],
+                    "points": 5
+                }}
+            ]
+            """
+            
+            response_text = await self.generate_text(prompt)
+            
+            # Try to parse JSON response
+            import json
+            try:
+                questions_data = json.loads(response_text)
+                if isinstance(questions_data, list):
+                    return questions_data
+                else:
+                    return [questions_data]
+            except json.JSONDecodeError:
+                # If JSON parsing fails, try to extract questions manually
+                return self._parse_questions_from_text(response_text)
+                
+        except Exception as e:
+            print(f"Error extracting questions from text: {e}")
+            return []
+
+    def _parse_questions_from_text(self, text: str) -> List[Dict[str, Any]]:
+        """
+        Fallback method to parse questions from text when JSON parsing fails.
+        """
+        questions = []
+        
+        # Simple pattern matching for questions
+        import re
+        
+        # Look for question patterns
+        question_patterns = [
+            r'(?:Question:|Q:)\s*(.+?)(?=\n|$)',
+            r'(?:^\d+\.)\s*(.+?)(?=\n|$)',
+            r'(.+?\?)\s*(?=\n|$)',
+        ]
+        
+        for pattern in question_patterns:
+            matches = re.findall(pattern, text, re.MULTILINE | re.IGNORECASE)
+            for match in matches:
+                question_content = match.strip()
+                if len(question_content) > 10:  # Filter out very short matches
+                    questions.append({
+                        "title": f"Extracted Question {len(questions) + 1}",
+                        "content": question_content,
+                        "answer": "",
+                        "question_type": "short_answer",
+                        "difficulty_level": "intermediate",
+                        "options": [],
+                        "keywords": [],
+                        "points": 1
+                    })
+        
+        return questions[:10]  # Limit to 10 questions
+
     # If Gemini is also used for embeddings (alternative to dedicated Google Text-Embedding-004 service)
     # async def get_text_embedding(self, text: str, task_type: str = "RETRIEVAL_DOCUMENT") -> List[float]:
     #     """
