@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import apiClient from '../api/client';
+import { subjectsService } from '../api/subjectsService';
 
 const SubjectsScreen = ({ navigation }) => {
   const [subjects, setSubjects] = useState([]);
@@ -22,19 +23,23 @@ const SubjectsScreen = ({ navigation }) => {
     try {
       if (!isRefreshing) setLoading(true);
       
-      // Try the with-topics endpoint first
-      let response;
+      // Try the with-topics endpoint first using the service
+      let subjects;
       try {
-        response = await apiClient.get('/subjects/with-topics');
+        subjects = await subjectsService.getSubjectsWithTopics();
+        console.log('Subjects fetched with topics:', subjects);
       } catch (error) {
         console.log('with-topics endpoint failed, trying basic subjects endpoint');
+        console.error('Error details:', error);
         // Fallback to basic subjects endpoint
-        response = await apiClient.get('/subjects');
+        subjects = await subjectsService.getSubjects();
+        console.log('Subjects fetched (basic):', subjects);
       }
       
-      if (response.data && Array.isArray(response.data)) {
-        setSubjects(response.data);
+      if (subjects && Array.isArray(subjects)) {
+        setSubjects(subjects);
       } else {
+        console.log('API returned invalid data, using fallback subjects');
         // Fallback to sample data if API returns empty or invalid data
         setSubjects([
           {

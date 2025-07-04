@@ -4,6 +4,8 @@ import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { store } from './src/store';
 import { checkAuthStatus } from './src/store/authSlice';
 import AppNavigator from './src/navigation/AppNavigator';
+import './src/utils/authDebug'; // Import auth debug utilities
+import './src/utils/devAuth'; // Import development authentication bypass
 
 // Loading component
 const LoadingScreen = () => (

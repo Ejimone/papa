@@ -13,6 +13,7 @@ class User(Base):
     full_name = Column(String(255), nullable=True)
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -25,6 +26,7 @@ class User(Base):
     analytics = relationship("UserAnalytics", back_populates="user")
     events = relationship("UserEvent", back_populates="user")
     practice_sessions = relationship("PracticeSession", back_populates="user")
+    uploaded_materials = relationship("CourseMaterial", back_populates="uploader")
     
     # Many-to-many relationships
     subjects = relationship("Subject", secondary="user_subjects", back_populates="enrolled_users")

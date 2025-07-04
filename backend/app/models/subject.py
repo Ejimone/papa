@@ -39,6 +39,7 @@ class Subject(Base):
     questions = relationship("Question", back_populates="subject")
     user_progress = relationship("UserProgress", back_populates="subject")
     enrolled_users = relationship("User", secondary="user_subjects", back_populates="subjects")
+    course_materials = relationship("CourseMaterial", back_populates="subject")
 
     def __repr__(self):
         return f"<Subject(id={self.id}, name='{self.name}', code='{self.code}')>"

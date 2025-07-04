@@ -9,6 +9,7 @@ export { subjectsService } from './subjectsService';
 export { analyticsService } from './analyticsService';
 export { aiService } from './aiService';
 export { userService } from './userService';
+export * as adminService from './adminService';
 
 // For backward compatibility and convenience
 export * from './authService';
@@ -18,6 +19,7 @@ export * from './subjectsService';
 export * from './analyticsService';
 export * from './aiService';
 export * from './userService';
+export * from './adminService';
 
 // Utility function to check API health
 export const checkAPIHealth = async () => {

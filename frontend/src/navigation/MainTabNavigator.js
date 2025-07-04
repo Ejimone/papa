@@ -1,16 +1,21 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSelector } from 'react-redux';
 
 import AIDashboardScreen from '../screens/AIDashboardScreen';
 import PracticeStackNavigator from './PracticeStackNavigator';
 import LearnStackNavigator from './LearnStackNavigator';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import AdminStackNavigator from './AdminStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
 const MainTabNavigator = () => {
+  const user = useSelector((state) => state.auth.user);
+  const isAdmin = user?.is_admin || false;
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -73,6 +78,18 @@ const MainTabNavigator = () => {
           ),
         }} 
       />
+      {isAdmin && (
+        <Tab.Screen 
+          name="Admin" 
+          component={AdminStackNavigator} 
+          options={{ 
+            headerShown: false,
+            tabBarIcon: ({ focused }) => (
+              <Text style={{ fontSize: 20 }}>⚙️</Text>
+            ),
+          }} 
+        />
+      )}
     </Tab.Navigator>
   );
 };

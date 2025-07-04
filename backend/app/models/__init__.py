@@ -4,6 +4,7 @@ from .base import Base
 # Import all models
 from .user import User, UserProfile, UserPreferences
 from .subject import Subject, Topic
+from .course_material import CourseMaterial
 from .question import (
     Question, QuestionMetadata, QuestionImage, 
     Explanation, Hint, SimilarQuestion,
@@ -37,6 +38,9 @@ __all__ = [
     
     # Subject models
     "Subject", "Topic",
+    
+    # Course material models
+    "CourseMaterial",
     
     # Question models
     "Question", "QuestionMetadata", "QuestionImage",
