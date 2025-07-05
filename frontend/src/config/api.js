@@ -9,7 +9,7 @@ const getLocalIP = () => {
       return debuggerHost;
     }
     // Fallback to common development IPs
-    return '172.16.0.59'; // Current machine IP
+    return '172.20.230.253'; // Current machine IP
   }
   // For production, use your actual domain
   return 'your-production-domain.com';
@@ -29,5 +29,13 @@ export const API_CONFIG = {
   TIMEOUT: 30000, // Increased timeout for mobile networks
   RETRY_ATTEMPTS: 3,
 };
+
+// Debug logging for development
+if (__DEV__) {
+  console.log('=== API CONFIGURATION ===');
+  console.log('BASE_URL:', API_CONFIG.BASE_URL);
+  console.log('Network IP detected:', getLocalIP());
+  console.log('========================');
+}
 
 export default API_CONFIG;

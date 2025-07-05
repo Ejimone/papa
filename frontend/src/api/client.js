@@ -62,6 +62,11 @@ apiClient.interceptors.request.use(
     } else {
       console.log(`API Request: ${config.method?.toUpperCase()} ${config.url} WITHOUT auth token`);
     }
+    
+    // Log the full URL being called for debugging
+    const fullUrl = config.baseURL + config.url;
+    console.log(`Full API URL: ${fullUrl}`);
+    
     return config;
   },
   (error) => {
