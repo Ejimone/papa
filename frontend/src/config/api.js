@@ -17,8 +17,12 @@ const getLocalIP = () => {
 
 const getAPIBaseURL = () => {
   if (__DEV__) {
-    const localIP = getLocalIP();
-    return `http://${localIP}:8000/api/v1`;
+    // Use ngrok URL for development to avoid network connectivity issues
+    return 'https://9dc8-125-17-13-54.ngrok-free.app/api/v1';
+    
+    // Alternative: Use local IP if ngrok is not available
+    // const localIP = getLocalIP();
+    // return `http://${localIP}:8000/api/v1`;
   }
   // Production URL
   return 'https://your-production-domain.com/api/v1';
